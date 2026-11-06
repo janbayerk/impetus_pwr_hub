@@ -1,0 +1,13 @@
+*-backups/
+*.bak
+*.kicad_prl
+fp-info-cache
+*-cache.lib
+*-cache.dcm
+_autosave-*
+*.tmp
+*-rescue.lib
+*-rescue.dcm
+.history/
+_restore_backup_*/
+*.lck
