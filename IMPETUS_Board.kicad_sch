@@ -1000,6 +1000,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "hello world\n"
+		(exclude_from_sim no)
+		(at 141.732 154.686 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "86eb97b6-ab33-436b-b67a-e19d352981a2")
+	)
 	(text "20mOhm SHUNT\nfor up to 8A"
 		(exclude_from_sim no)
 		(at 183.642 104.394 0)
