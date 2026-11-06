@@ -1022,7 +1022,7 @@
 	)
 	(text "at max load and 50% efficency\nmotor could pull 20A current\nVSHUNT = 164mV"
 		(exclude_from_sim no)
-		(at 76.2 112.014 0)
+		(at 99.822 111.252 0)
 		(effects
 			(font
 				(size 0.635 0.635)
