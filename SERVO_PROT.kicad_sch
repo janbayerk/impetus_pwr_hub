@@ -1774,6 +1774,16 @@
 		)
 		(uuid "6b5fa8b9-82f6-4af6-89c1-3f54e2524bcf")
 	)
+	(text "ADD SERVO TURNOFF"
+		(exclude_from_sim no)
+		(at 185.674 44.196 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "84f42724-7302-43d3-b2fa-a1a91574c354")
+	)
 	(text "100 ohm limits the current at 14.71A"
 		(exclude_from_sim no)
 		(at 139.954 54.864 0)
@@ -1783,6 +1793,16 @@
 			)
 		)
 		(uuid "8783db9f-9f88-4da3-b98c-76023fab6b8e")
+	)
+	(text "bulk capacitor needed?\n"
+		(exclude_from_sim no)
+		(at 164.338 91.694 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "93c3fc4b-82d5-4c35-9af8-1e66db716ec2")
 	)
 	(text "1.5uF -> ca. 3.06 V/ms dV/dt"
 		(exclude_from_sim no)

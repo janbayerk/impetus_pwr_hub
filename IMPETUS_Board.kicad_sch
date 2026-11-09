@@ -1020,6 +1020,16 @@
 		)
 		(uuid "89fab72c-d44a-4a49-b797-63491301c17d")
 	)
+	(text "temp sensor\n"
+		(exclude_from_sim no)
+		(at 47.244 44.958 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "af759bd9-5524-46be-8d14-0efcc565e531")
+	)
 	(text "at max load and 50% efficency\nmotor could pull 20A current\nVSHUNT = 164mV"
 		(exclude_from_sim no)
 		(at 99.822 111.252 0)
@@ -1029,6 +1039,16 @@
 			)
 		)
 		(uuid "ce7cdc5a-db9a-45c2-9a67-9f492f8a4fba")
+	)
+	(text "look into voltage drop of lifepo4 -> DCDC"
+		(exclude_from_sim no)
+		(at 127.254 42.418 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "fc13c71e-23f0-4191-a50c-b417a06a6614")
 	)
 	(junction
 		(at 156.21 53.34)
