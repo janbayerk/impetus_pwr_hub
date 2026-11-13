@@ -160,6 +160,183 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:C_Polarized"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "C"
+				(at 0.635 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "C_Polarized"
+				(at 0.635 -2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0.9652 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Polarized capacitor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "CP_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "C_Polarized_0_1"
+				(rectangle
+					(start -2.286 0.508)
+					(end 2.286 1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 2.286) (xy -0.762 2.286)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 2.794) (xy -1.27 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 2.286 -0.508)
+					(end -2.286 -1.016)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+			)
+			(symbol "C_Polarized_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.794)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.794)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:R"
 			(pin_numbers
 				(hide yes)
@@ -780,6 +957,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "any signal above vref, will disable IN2.\nDrive this Pin high to disable Backup battery path\n"
+		(exclude_from_sim no)
+		(at 108.204 116.332 0)
+		(effects
+			(font
+				(size 0.762 0.762)
+			)
+		)
+		(uuid "12a9c586-65eb-4c17-aa76-67ba910879f3")
+	)
 	(text "1.78V typ"
 		(exclude_from_sim no)
 		(at 98.552 81.534 0)
@@ -822,23 +1009,13 @@
 	)
 	(text "see datasheet table 9-3"
 		(exclude_from_sim no)
-		(at 98.552 118.618 0)
+		(at 32.004 114.3 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 		(uuid "b1070be7-2ac7-4590-ac2f-440913479e0c")
-	)
-	(text "IN2 is powered by a 3.2V LiFePO4 cell\nOV is defined as 7.42V"
-		(exclude_from_sim no)
-		(at 37.084 101.346 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "d2b24944-99b0-439e-8787-af2509979d0a")
 	)
 	(text "22.1kohm = 4.5A ILIM"
 		(exclude_from_sim no)
@@ -851,10 +1028,10 @@
 		(uuid "f6ba3290-7e44-4385-b9d2-6d9b8b1e43a3")
 	)
 	(junction
-		(at 69.85 102.87)
+		(at 161.29 68.58)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "0d0367c6-12f1-4d4d-a8fb-bd93008c915c")
+		(uuid "009d1e7b-2682-4b37-9918-3b5db9a98903")
 	)
 	(junction
 		(at 87.63 102.87)
@@ -910,12 +1087,6 @@
 		(color 0 0 0 0)
 		(uuid "d6d72113-3622-4140-8f1c-80c88bc1c4d3")
 	)
-	(junction
-		(at 69.85 92.71)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f7e7c560-cd54-43a7-aa5c-0686b01ce020")
-	)
 	(wire
 		(pts
 			(xy 168.91 109.22) (xy 168.91 101.6)
@@ -955,16 +1126,6 @@
 			(type default)
 		)
 		(uuid "044a4069-0448-4e5e-8fd4-e7842057f042")
-	)
-	(wire
-		(pts
-			(xy 99.06 109.22) (xy 99.06 115.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "067370e4-5d1f-458c-895d-6044cf80f357")
 	)
 	(wire
 		(pts
@@ -1068,16 +1229,6 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 92.71) (xy 69.85 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "29082f3c-8428-4153-807e-bb06f539aa51")
-	)
-	(wire
-		(pts
 			(xy 78.74 91.44) (xy 78.74 78.74)
 		)
 		(stroke
@@ -1098,23 +1249,13 @@
 	)
 	(wire
 		(pts
-			(xy 99.06 115.57) (xy 78.74 115.57)
+			(xy 161.29 68.58) (xy 170.18 68.58)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "37b9905a-4f97-40db-b5ad-3aaab03607f2")
-	)
-	(wire
-		(pts
-			(xy 69.85 92.71) (xy 87.63 92.71)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3f77d01e-d0ec-41b0-9fbc-889af324d2e0")
+		(uuid "396bed86-50a8-4dd1-aea9-0e270d042b9f")
 	)
 	(wire
 		(pts
@@ -1158,26 +1299,6 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 102.87) (xy 69.85 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "54f3fd1a-ae83-4da2-809c-9ed68235b5e0")
-	)
-	(wire
-		(pts
-			(xy 78.74 115.57) (xy 78.74 102.87)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5746448f-5f75-4668-87fe-0e42dcd9bcd8")
-	)
-	(wire
-		(pts
 			(xy 69.85 78.74) (xy 69.85 80.01)
 		)
 		(stroke
@@ -1218,17 +1339,17 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 102.87) (xy 69.85 102.87)
+			(xy 106.68 109.22) (xy 109.22 109.22)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "893c4b0d-79a9-4451-8260-509995f76b13")
+		(uuid "82fcab3b-4e70-48f4-859e-f2d19b17e1b3")
 	)
 	(wire
 		(pts
-			(xy 149.86 68.58) (xy 170.18 68.58)
+			(xy 149.86 68.58) (xy 161.29 68.58)
 		)
 		(stroke
 			(width 0)
@@ -1248,16 +1369,6 @@
 	)
 	(wire
 		(pts
-			(xy 109.22 109.22) (xy 99.06 109.22)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "97620feb-567f-4405-9fa1-21c9a2687932")
-	)
-	(wire
-		(pts
 			(xy 78.74 78.74) (xy 69.85 78.74)
 		)
 		(stroke
@@ -1268,7 +1379,7 @@
 	)
 	(wire
 		(pts
-			(xy 63.5 92.71) (xy 69.85 92.71)
+			(xy 63.5 92.71) (xy 87.63 92.71)
 		)
 		(stroke
 			(width 0)
@@ -1328,13 +1439,13 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 101.6) (xy 69.85 102.87)
+			(xy 161.29 68.58) (xy 161.29 72.39)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "dd9404d3-3cfd-4aff-8abe-c195c51a949a")
+		(uuid "de09eeb6-be55-454c-b6aa-afe814844d31")
 	)
 	(wire
 		(pts
@@ -1355,6 +1466,16 @@
 			(type default)
 		)
 		(uuid "e651563f-31ac-45f6-b7c3-fe3097be2967")
+	)
+	(wire
+		(pts
+			(xy 161.29 80.01) (xy 161.29 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ea544e5c-db41-424d-bbce-91a3418780ce")
 	)
 	(wire
 		(pts
@@ -1407,6 +1528,30 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+			)
+		)
+	)
+	(global_label "IN2_EN_N"
+		(shape input)
+		(at 106.68 109.22 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "5af8595b-63b0-4669-a18a-a8025ffdb288")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 94.8048 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 			)
 		)
 	)
@@ -1606,87 +1751,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 69.85 97.79 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "2024d5b6-057f-4d9f-bbde-e1ad0c0212ab")
-		(property "Reference" "R33"
-			(at 71.12 95.758 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "60k"
-			(at 71.12 99.822 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 68.072 97.79 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 69.85 97.79 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 69.85 97.79 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "f9a44d25-97bf-45be-94d3-6cb3bbe993bf")
-		)
-		(pin "1"
-			(uuid "9e5d9d8c-b32a-4f8b-9915-e5c82ee08243")
-		)
-		(instances
-			(project "IMPETUS_Board"
-				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/4f66a1d4-e0dc-4078-a72d-9064b8cfd47a"
-					(reference "R33")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 87.63 111.76 0)
 		(unit 1)
@@ -1760,6 +1824,85 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/4f66a1d4-e0dc-4078-a72d-9064b8cfd47a"
 					(reference "#PWR035")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 161.29 82.55 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "494a39c8-c0af-487d-84f7-5a2c67d02bbb")
+		(property "Reference" "#PWR042"
+			(at 167.64 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 165.1 82.5499 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 161.29 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 161.29 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 161.29 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "562b5547-e25a-4f28-baf1-e5c37d5e2204")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/4f66a1d4-e0dc-4078-a72d-9064b8cfd47a"
+					(reference "#PWR042")
 					(unit 1)
 				)
 			)
@@ -2005,18 +2148,19 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 69.85 107.95 0)
+		(lib_id "Device:C_Polarized")
+		(at 161.29 76.2 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
-		(uuid "85dd5f1f-8dd6-4874-a1e5-2e88d36a5b33")
-		(property "Reference" "R34"
-			(at 71.12 105.918 0)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "88b8a46a-7aa5-41e5-8494-1dcbb7e3e5ae")
+		(property "Reference" "C41"
+			(at 165.1 74.0409 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2026,8 +2170,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
-			(at 71.12 109.982 0)
+		(property "Value" "C_Polarized"
+			(at 165.1 76.5809 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2038,7 +2182,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 68.072 107.95 90)
+			(at 162.2552 80.01 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2049,7 +2193,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 69.85 107.95 0)
+			(at 161.29 76.2 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2059,8 +2203,8 @@
 				)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 69.85 107.95 0)
+		(property "Description" "Polarized capacitor"
+			(at 161.29 76.2 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2071,15 +2215,15 @@
 			)
 		)
 		(pin "2"
-			(uuid "7667a14d-f4d2-477c-9c76-848975201972")
+			(uuid "00f33186-e8b9-4ac7-8886-75ea0d82fea3")
 		)
 		(pin "1"
-			(uuid "f3b26213-3698-47a0-b0a9-f8d701b273c3")
+			(uuid "3cb0eb9f-854d-41a3-bdac-9780dd23f9e0")
 		)
 		(instances
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/4f66a1d4-e0dc-4078-a72d-9064b8cfd47a"
-					(reference "R34")
+					(reference "C41")
 					(unit 1)
 				)
 			)
@@ -2433,85 +2577,6 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/4f66a1d4-e0dc-4078-a72d-9064b8cfd47a"
 					(reference "R35")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 69.85 111.76 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c6613e5e-7292-4e70-9612-b65442ce5a3e")
-		(property "Reference" "#PWR034"
-			(at 69.85 118.11 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 69.85 116.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 69.85 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 69.85 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 69.85 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "9bf3f9be-e3e6-4cde-a492-58cd92c78117")
-		)
-		(instances
-			(project "IMPETUS_Board"
-				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/4f66a1d4-e0dc-4078-a72d-9064b8cfd47a"
-					(reference "#PWR034")
 					(unit 1)
 				)
 			)

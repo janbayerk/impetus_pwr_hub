@@ -1398,7 +1398,7 @@
 				)
 			)
 			(pin open_collector line
-				(at 0 -48.26 0)
+				(at 0 -60.96 0)
 				(length 5.08)
 				(name "STAT"
 					(effects
@@ -1434,7 +1434,7 @@
 				)
 			)
 			(pin open_collector line
-				(at 0 -60.96 0)
+				(at 0 -58.42 0)
 				(length 5.08)
 				(name "INT_N"
 					(effects
