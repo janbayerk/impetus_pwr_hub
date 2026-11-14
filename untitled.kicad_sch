@@ -1610,6 +1610,145 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:+3V3"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "+3V3"
+				(at 0 3.556 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"+3V3\""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "+3V3_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "+3V3_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "power:GND"
 			(power global)
 			(pin_numbers
@@ -1758,7 +1897,7 @@
 	)
 	(text "1 CELL\n3V5 Charge Voltage\n1A Charge Current"
 		(exclude_from_sim no)
-		(at 85.598 101.346 0)
+		(at 72.898 97.028 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -1835,6 +1974,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "503b0e40-3514-420b-93b4-50d4f2d54167")
+	)
+	(junction
+		(at 100.33 124.46)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "52138cc3-9926-4ad5-84d3-8107d975c341")
 	)
 	(junction
 		(at 102.87 66.04)
@@ -1933,6 +2078,12 @@
 		(uuid "e9a94612-d32a-4b17-a740-c6ad5d1b4dac")
 	)
 	(junction
+		(at 88.9 99.06)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ecafe49e-84ec-461b-97a9-3cab4ab18eab")
+	)
+	(junction
 		(at 177.8 114.3)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1943,6 +2094,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f6484898-ed96-47ce-b07c-5faa84ceeba1")
+	)
+	(junction
+		(at 102.87 109.22)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f6d7645d-1600-4522-87ff-c595e9a8cd5e")
 	)
 	(junction
 		(at 102.87 54.61)
@@ -1988,6 +2145,16 @@
 	)
 	(wire
 		(pts
+			(xy 97.79 129.54) (xy 100.33 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "09444664-4290-43f7-b207-0401f1c5619f")
+	)
+	(wire
+		(pts
 			(xy 92.71 41.91) (xy 92.71 44.45)
 		)
 		(stroke
@@ -2015,6 +2182,16 @@
 			(type default)
 		)
 		(uuid "0c9cd2b3-e1ad-4e2c-87f6-020b5a498aca")
+	)
+	(wire
+		(pts
+			(xy 100.33 124.46) (xy 106.68 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d256081-8a47-4376-ba49-bcd8d756dda1")
 	)
 	(wire
 		(pts
@@ -2055,6 +2232,16 @@
 			(type default)
 		)
 		(uuid "18d3c1f0-d8f0-4471-8b5d-9647f88beb89")
+	)
+	(wire
+		(pts
+			(xy 100.33 129.54) (xy 100.33 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1ca60b33-d63a-434e-9a3c-d153222c0380")
 	)
 	(wire
 		(pts
@@ -2125,6 +2312,16 @@
 			(type default)
 		)
 		(uuid "2ae0f91f-c6f7-4002-8742-567656f3fbc8")
+	)
+	(wire
+		(pts
+			(xy 88.9 105.41) (xy 88.9 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2ccbe60a-5800-4a5d-9031-d716a75624e7")
 	)
 	(wire
 		(pts
@@ -2258,7 +2455,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 124.46) (xy 106.68 124.46)
+			(xy 88.9 124.46) (xy 100.33 124.46)
 		)
 		(stroke
 			(width 0)
@@ -2415,6 +2612,16 @@
 			(type default)
 		)
 		(uuid "70ac1fea-6eb3-40f9-9e01-892e5aa0237f")
+	)
+	(wire
+		(pts
+			(xy 86.36 129.54) (xy 90.17 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "70cd8792-013d-4eb4-88c2-0ec82909c8d1")
 	)
 	(wire
 		(pts
@@ -2718,6 +2925,16 @@
 	)
 	(wire
 		(pts
+			(xy 102.87 109.22) (xy 106.68 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b3ac6036-6fd5-4c2c-b5f3-5619b840bbc4")
+	)
+	(wire
+		(pts
 			(xy 208.28 132.08) (xy 208.28 129.54)
 		)
 		(stroke
@@ -2825,6 +3042,16 @@
 			(type default)
 		)
 		(uuid "c79bbaf3-4d28-4538-a978-8faf85ecd42d")
+	)
+	(wire
+		(pts
+			(xy 92.71 105.41) (xy 88.9 105.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c9e445a0-737c-4752-a2b7-ae0387694c02")
 	)
 	(wire
 		(pts
@@ -2988,7 +3215,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 109.22) (xy 106.68 109.22)
+			(xy 88.9 109.22) (xy 102.87 109.22)
 		)
 		(stroke
 			(width 0)
@@ -3025,6 +3252,16 @@
 			(type default)
 		)
 		(uuid "e2b694c3-e6de-416e-9a5c-d09fefd9c666")
+	)
+	(wire
+		(pts
+			(xy 100.33 105.41) (xy 102.87 105.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e35e206b-ff93-468d-95ec-0fe532a30f6d")
 	)
 	(wire
 		(pts
@@ -3125,6 +3362,16 @@
 			(type default)
 		)
 		(uuid "f2b06c36-f075-4d34-ba4e-c6f058a1b6b1")
+	)
+	(wire
+		(pts
+			(xy 102.87 105.41) (xy 102.87 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f3809d89-5831-42d2-ae2c-4cd7d6b87d10")
 	)
 	(wire
 		(pts
@@ -3497,6 +3744,85 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+3V3")
+		(at 86.36 129.54 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "075e7b04-1591-4e57-a94d-9cf5019ce518")
+		(property "Reference" "#PWR061"
+			(at 90.17 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 82.55 129.5399 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 86.36 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 86.36 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 86.36 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "371da211-47f5-4bd1-98ac-9fad4b2be381")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
+					(reference "#PWR061")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 172.72 114.3 0)
 		(unit 1)
@@ -3732,6 +4058,85 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
 					(reference "C12")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 93.98 129.54 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "2cabd41a-9c59-42e6-8c63-1a86d10db4e9")
+		(property "Reference" "R46"
+			(at 92.202 127 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 96.774 127 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 93.98 131.318 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 93.98 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 93.98 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "0c0c1aee-d47e-4e82-9063-6222d04646c4")
+		)
+		(pin "1"
+			(uuid "d55ce22b-a529-4251-9ee4-a8a1861c3679")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
+					(reference "R46")
 					(unit 1)
 				)
 			)
@@ -5827,6 +6232,85 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
 					(reference "R33")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 96.52 105.41 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "c2b24a0e-efcc-42d4-9309-4f183daac00f")
+		(property "Reference" "R45"
+			(at 93.98 103.124 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 99.568 103.124 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 96.52 107.188 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 96.52 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 96.52 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "b8fae979-ba33-4af8-908d-99f882bda3e1")
+		)
+		(pin "1"
+			(uuid "932cb145-4c6a-460f-9587-894c68033c08")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
+					(reference "R45")
 					(unit 1)
 				)
 			)

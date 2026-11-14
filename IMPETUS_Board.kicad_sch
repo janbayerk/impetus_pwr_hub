@@ -1224,16 +1224,6 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "hello world\n"
-		(exclude_from_sim no)
-		(at 141.732 154.686 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "86eb97b6-ab33-436b-b67a-e19d352981a2")
-	)
 	(text "20mOhm SHUNT\nfor up to 8A"
 		(exclude_from_sim no)
 		(at 183.642 104.394 0)
@@ -3230,6 +3220,53 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e"
 					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 38.1 139.7)
+		(size 12.7 12.7)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.3048)
+			(type solid)
+			(color 0 194 0 1)
+		)
+		(fill
+			(color 0 72 72 1)
+		)
+		(uuid "aea48d15-cc6c-4003-ae6a-bc06f0ff6be6")
+		(property "Sheetname" "IO"
+			(at 38.1 138.9884 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "IO.kicad_sch"
+			(at 38.1 152.9846 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e"
+					(page "8")
 				)
 			)
 		)
