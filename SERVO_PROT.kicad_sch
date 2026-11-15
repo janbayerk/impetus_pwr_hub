@@ -770,172 +770,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Device:D_TVS"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "D_TVS"
-				(at 0 -2.54 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Bidirectional transient-voltage-suppression diode"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "diode TVS thyrector"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "D_TVS_0_1"
-				(polyline
-					(pts
-						(xy -2.54 1.27) (xy -2.54 -1.27) (xy 2.54 1.27) (xy 2.54 -1.27) (xy -2.54 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.508 1.27) (xy 0 1.27) (xy 0 -1.27) (xy -0.508 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 0) (xy -1.27 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "D_TVS_1_1"
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "A1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Device:R"
 			(pin_numbers
 				(hide yes)
@@ -1059,6 +893,160 @@
 					(at 0 -3.81 90)
 					(length 1.27)
 					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Diode:SMAJ440A"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SMAJ440A"
+				(at 0 -2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Diode_SMD:D_SMA"
+				(at 0 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+				(at -1.27 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "600W unidirectional Transient Voltage Suppressor, 440.0Vr, SMA(DO-214AC)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "unidirectional diode TVS voltage suppressor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "D*SMA*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "SMAJ440A_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy -1.27 1.27) (xy -1.27 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "SMAJ440A_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "A1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 2.54)
+					(name "A2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2159,7 +2147,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "rising OV triggered at\nVIN = 20.5 -> 1.2V"
+	(text "rising OV triggered at\nVIN = 18.8 -> 1.2V"
 		(exclude_from_sim no)
 		(at 52.07 79.502 0)
 		(effects
@@ -2181,7 +2169,7 @@
 	)
 	(text "servo connector,\npins might be changed\n"
 		(exclude_from_sim no)
-		(at 216.662 58.674 0)
+		(at 219.456 50.546 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2199,9 +2187,9 @@
 		)
 		(uuid "4593f160-070a-4612-9447-6244115127e6")
 	)
-	(text "820 ohms sets the adc voltage in 0-3V3 Range"
+	(text "3V at 18A"
 		(exclude_from_sim no)
-		(at 141.224 60.452 0)
+		(at 119.634 62.484 0)
 		(effects
 			(font
 				(size 0.508 0.508)
@@ -2229,15 +2217,25 @@
 		)
 		(uuid "a157743b-a640-4ed0-a52c-dbcc7c5c406d")
 	)
-	(text "1.5uF -> ca. 3.06 V/ms dV/dt"
+	(text "6.8uF -> ca. 0.67 V/ms dV/dt"
 		(exclude_from_sim no)
-		(at 124.968 43.434 0)
+		(at 140.97 44.958 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 		(uuid "b09eaff5-6aa7-4c25-a66e-50e5b65d237e")
+	)
+	(text "resistor values are from claude, it makes sense\nto limit the servo return current in the signal line"
+		(exclude_from_sim no)
+		(at 214.63 61.214 0)
+		(effects
+			(font
+				(size 0.762 0.762)
+			)
+		)
+		(uuid "e6edfeeb-2a21-4937-950b-c6efe08e6d5f")
 	)
 	(junction
 		(at 146.05 83.82)
@@ -2274,6 +2272,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2015dc92-a588-4f5b-b01f-39dc90dbef80")
+	)
+	(junction
+		(at 118.11 60.96)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "38ea0f70-2095-4475-bdfe-cf6d9e1d048d")
 	)
 	(junction
 		(at 119.38 71.12)
@@ -2525,6 +2529,16 @@
 	)
 	(wire
 		(pts
+			(xy 187.96 63.5) (xy 191.77 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "127d85dc-7b64-498d-8207-b6d53a4e088b")
+	)
+	(wire
+		(pts
 			(xy 148.59 55.88) (xy 148.59 58.42)
 		)
 		(stroke
@@ -2625,6 +2639,16 @@
 	)
 	(wire
 		(pts
+			(xy 187.96 66.04) (xy 209.55 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "286a119e-cd3f-4621-bc92-292383e2b471")
+	)
+	(wire
+		(pts
 			(xy 50.8 68.58) (xy 50.8 66.04)
 		)
 		(stroke
@@ -2662,6 +2686,16 @@
 			(type default)
 		)
 		(uuid "3f11a430-6158-4c25-af81-63cccce39a8d")
+	)
+	(wire
+		(pts
+			(xy 199.39 63.5) (xy 231.14 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f344463-868b-4b83-9a17-6393d05ef9eb")
 	)
 	(wire
 		(pts
@@ -2805,7 +2839,7 @@
 	)
 	(wire
 		(pts
-			(xy 190.5 71.12) (xy 222.25 71.12)
+			(xy 190.5 71.12) (xy 231.14 71.12)
 		)
 		(stroke
 			(width 0)
@@ -2852,6 +2886,16 @@
 			(type default)
 		)
 		(uuid "6df4e1cf-9238-45ed-bf41-b829f35a22a9")
+	)
+	(wire
+		(pts
+			(xy 118.11 60.96) (xy 120.65 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f022650-4144-4b81-9bd4-404b8bcff227")
 	)
 	(wire
 		(pts
@@ -2965,6 +3009,16 @@
 	)
 	(wire
 		(pts
+			(xy 217.17 66.04) (xy 231.14 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "950d0907-ae03-4a41-8447-98270fa4eb32")
+	)
+	(wire
+		(pts
 			(xy 52.07 115.57) (xy 52.07 118.11)
 		)
 		(stroke
@@ -3022,16 +3076,6 @@
 			(type default)
 		)
 		(uuid "a306da7d-306f-4f6b-bbd6-43555c894bd3")
-	)
-	(wire
-		(pts
-			(xy 187.96 66.04) (xy 222.25 66.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ab34b22e-8c29-4949-b2f7-ddb67d5e32da")
 	)
 	(wire
 		(pts
@@ -3135,7 +3179,7 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 68.58) (xy 222.25 68.58)
+			(xy 172.72 68.58) (xy 231.14 68.58)
 		)
 		(stroke
 			(width 0)
@@ -3175,7 +3219,7 @@
 	)
 	(wire
 		(pts
-			(xy 116.84 60.96) (xy 120.65 60.96)
+			(xy 116.84 60.96) (xy 118.11 60.96)
 		)
 		(stroke
 			(width 0)
@@ -3232,6 +3276,16 @@
 			(type default)
 		)
 		(uuid "d806bc89-2ef8-4061-934b-ff9bd90d2a84")
+	)
+	(wire
+		(pts
+			(xy 118.11 45.72) (xy 118.11 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "db2c8c1f-b758-4452-a132-2cf2cf9443ef")
 	)
 	(wire
 		(pts
@@ -3302,16 +3356,6 @@
 			(type default)
 		)
 		(uuid "ebc957f5-8872-468e-8c3f-120885d42c29")
-	)
-	(wire
-		(pts
-			(xy 187.96 63.5) (xy 222.25 63.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f21e0471-0cfc-4940-bac4-72d34606ef97")
 	)
 	(wire
 		(pts
@@ -3432,6 +3476,30 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+	)
+	(global_label "eFUSE_IMON"
+		(shape input)
+		(at 118.11 45.72 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "cf2ca548-c110-4e6c-a834-24584cd3e3a9")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 118.11 31.1838 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 	)
@@ -3790,7 +3858,7 @@
 				)
 			)
 		)
-		(property "Value" "PTPS2598300LNRGER"
+		(property "Value" "TPS259830ONRGER"
 			(at 87.122 48.514 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3917,6 +3985,86 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/dfc2d325-f7d0-416f-b2dd-e61f7e380399"
 					(reference "U6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 195.58 63.5 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0cb3b945-fed4-4e63-8db2-4f6bd1b6d434")
+		(property "Reference" "R52"
+			(at 195.58 57.15 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100"
+			(at 195.58 59.69 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 195.58 65.278 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 195.58 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 195.58 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "c5238dcb-e941-4fac-a1e0-b59b4000ac65")
+		)
+		(pin "1"
+			(uuid "e76593a8-1fb6-4445-8c8a-ff8f055f7b89")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/dfc2d325-f7d0-416f-b2dd-e61f7e380399"
+					(reference "R52")
 					(unit 1)
 				)
 			)
@@ -4185,7 +4333,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "11k"
 			(at 43.18 85.0899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4265,7 +4413,7 @@
 				)
 			)
 		)
-		(property "Value" "820"
+		(property "Value" "680"
 			(at 129.032 59.944 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4646,6 +4794,88 @@
 		)
 	)
 	(symbol
+		(lib_id "Diode:SMAJ440A")
+		(at 172.72 76.2 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "85378910-5f16-4df2-b962-69ef253a0ae9")
+		(property "Reference" "D3"
+			(at 175.26 74.9299 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SMBJ18A"
+			(at 175.26 77.4699 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SMA"
+			(at 167.64 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://www.littelfuse.com/media?resourcetype=datasheets&itemid=75e32973-b177-4ee3-a0ff-cedaf1abdb93&filename=smaj-datasheet"
+			(at 172.72 74.93 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "600W unidirectional Transient Voltage Suppressor, 440.0Vr, SMA(DO-214AC)"
+			(at 172.72 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3a5c41a4-55de-4ef2-a8e7-c37814be9203")
+		)
+		(pin "2"
+			(uuid "9c020470-e98b-44fd-acab-9b0489056690")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/dfc2d325-f7d0-416f-b2dd-e61f7e380399"
+					(reference "D3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 124.46 55.88 270)
 		(unit 1)
@@ -4667,7 +4897,7 @@
 				)
 			)
 		)
-		(property "Value" "1.5uF"
+		(property "Value" "6.8nF"
 			(at 124.46 50.8 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4802,88 +5032,6 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/dfc2d325-f7d0-416f-b2dd-e61f7e380399"
 					(reference "D5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D_TVS")
-		(at 172.72 76.2 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "af7585e5-f361-4f01-95d4-7398a7f2246c")
-		(property "Reference" "D3"
-			(at 175.26 74.9299 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "SMBJ16CA"
-			(at 175.26 77.4699 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 172.72 76.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 172.72 76.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Bidirectional transient-voltage-suppression diode"
-			(at 172.72 76.2 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "b195b9bb-6891-4ff5-b826-85415590116c")
-		)
-		(pin "1"
-			(uuid "3b705d9c-e7dd-4e4a-bf7b-271448ceb04e")
-		)
-		(instances
-			(project "IMPETUS_Board"
-				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/dfc2d325-f7d0-416f-b2dd-e61f7e380399"
-					(reference "D3")
 					(unit 1)
 				)
 			)
@@ -5210,7 +5358,7 @@
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x04_Socket")
-		(at 227.33 68.58 0)
+		(at 236.22 68.58 0)
 		(mirror x)
 		(unit 1)
 		(body_style 1)
@@ -5222,7 +5370,7 @@
 		(fields_autoplaced yes)
 		(uuid "e4828f96-dea1-4db5-9793-f4ac6dc7f6e2")
 		(property "Reference" "J4"
-			(at 228.6 68.5801 0)
+			(at 237.49 68.5801 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -5233,7 +5381,7 @@
 			)
 		)
 		(property "Value" "Conn_01x04_Socket"
-			(at 228.6 66.0401 0)
+			(at 237.49 66.0401 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -5244,7 +5392,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 227.33 68.58 0)
+			(at 236.22 68.58 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5255,7 +5403,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 227.33 68.58 0)
+			(at 236.22 68.58 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5266,7 +5414,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x04, script generated"
-			(at 227.33 68.58 0)
+			(at 236.22 68.58 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5298,6 +5446,85 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 213.36 66.04 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "ea84b23b-9730-4fae-a821-45b15398694a")
+		(property "Reference" "R53"
+			(at 218.186 67.31 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "470"
+			(at 207.772 67.31 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 213.36 67.818 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 213.36 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 213.36 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "e53b06d7-3a12-4a65-8c99-9ffcfd5fc7a6")
+		)
+		(pin "1"
+			(uuid "0078ad5d-cafe-404b-a882-92d8a895e144")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/dfc2d325-f7d0-416f-b2dd-e61f7e380399"
+					(reference "R53")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "IMPETUS_LIB:PTPS259830LNRGER")
 		(at 55.88 115.57 0)
 		(unit 2)
@@ -5320,7 +5547,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "PTPS2598300LNRGER"
+		(property "Value" "TPS259830ONRGER"
 			(at 90.17 120.6499 0)
 			(show_name no)
 			(do_not_autoplace no)
