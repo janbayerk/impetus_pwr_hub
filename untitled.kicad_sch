@@ -1295,9 +1295,8 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Transistor_FET:2N7002"
+		(symbol "Transistor_FET:BUK9M6R6-30EX"
 			(pin_names
-				(offset 0)
 				(hide yes)
 			)
 			(exclude_from_sim no)
@@ -1316,7 +1315,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "2N7002"
+			(property "Value" "BUK9M6R6-30EX"
 				(at 5.08 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1327,7 +1326,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+			(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
 				(at 5.08 -1.905 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1340,7 +1339,7 @@
 					(justify left)
 				)
 			)
-			(property "Datasheet" "https://www.onsemi.com/pub/Collateral/NDS7002A-D.PDF"
+			(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/BUK9M6R6-30E.pdf"
 				(at 5.08 -3.81 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1352,7 +1351,7 @@
 					(justify left)
 				)
 			)
-			(property "Description" "0.115A Id, 60V Vds, N-Channel MOSFET, SOT-23"
+			(property "Description" "70A Id, 30V Vds, N-Channel TrenchMOS MOSFET, 5.3mOhm Ron, 18nC Qqd, -55 to 175 °C, LFPAK33"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1363,7 +1362,7 @@
 					)
 				)
 			)
-			(property "ki_keywords" "N-Channel Switching MOSFET"
+			(property "ki_keywords" "Power MOSFET N-MOS"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1374,7 +1373,7 @@
 					)
 				)
 			)
-			(property "ki_fp_filters" "SOT?23*"
+			(property "ki_fp_filters" "LFPAK33*"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1385,7 +1384,7 @@
 					)
 				)
 			)
-			(symbol "2N7002_0_1"
+			(symbol "BUK9M6R6-30EX_0_1"
 				(polyline
 					(pts
 						(xy 0.254 1.905) (xy 0.254 -1.905)
@@ -1529,7 +1528,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.921 0.381) (xy 3.683 0.381)
+						(xy 2.794 0.508) (xy 2.921 0.381) (xy 3.683 0.381) (xy 3.81 0.254)
 					)
 					(stroke
 						(width 0)
@@ -1552,11 +1551,11 @@
 					)
 				)
 			)
-			(symbol "2N7002_1_1"
-				(pin input line
-					(at -5.08 0 0)
+			(symbol "BUK9M6R6-30EX_1_1"
+				(pin passive line
+					(at 2.54 -5.08 90)
 					(length 2.54)
-					(name "G"
+					(name "S"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1574,6 +1573,7 @@
 				(pin passive line
 					(at 2.54 -5.08 90)
 					(length 2.54)
+					(hide yes)
 					(name "S"
 						(effects
 							(font
@@ -1582,6 +1582,43 @@
 						)
 					)
 					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(hide yes)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1599,7 +1636,7 @@
 							)
 						)
 					)
-					(number "3"
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1875,6 +1912,16 @@
 		)
 		(uuid "2bf4dbd8-af49-4da0-a596-fe5088b097b6")
 	)
+	(text "max 6.6mohm rdson\n"
+		(exclude_from_sim no)
+		(at 235.712 103.124 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "75a9bfbc-c9ac-471c-965b-0c9fb228e468")
+	)
 	(text "input current limit \naround 1A\n"
 		(exclude_from_sim no)
 		(at 85.598 78.232 0)
@@ -1914,6 +1961,16 @@
 			)
 		)
 		(uuid "c1d162c3-5ed3-4883-b18e-6aac3a2e94f3")
+	)
+	(text "device I2C adr:\n0x6A\n"
+		(exclude_from_sim no)
+		(at 54.61 113.538 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "ffb6a640-f0d5-4d2c-a3e2-96ac1538dd77")
 	)
 	(junction
 		(at 167.64 99.06)
@@ -4233,94 +4290,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Transistor_FET:2N7002")
-		(at 200.66 101.6 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "39a486b0-7f54-424c-89b0-432c4fa40604")
-		(property "Reference" "Q1"
-			(at 207.01 100.3299 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "tbd"
-			(at 207.01 102.8699 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 205.74 103.505 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-			)
-		)
-		(property "Datasheet" "https://www.onsemi.com/pub/Collateral/NDS7002A-D.PDF"
-			(at 205.74 105.41 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Description" "0.115A Id, 60V Vds, N-Channel MOSFET, SOT-23"
-			(at 200.66 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "d8f8cba9-9850-4e5e-842a-62f48b46ca4f")
-		)
-		(pin "3"
-			(uuid "41da4c23-c1ba-4b1d-a355-9529d3a974dc")
-		)
-		(pin "1"
-			(uuid "6570c7bd-67f2-4e0e-bbdd-8c272c5a7a94")
-		)
-		(instances
-			(project "IMPETUS_Board"
-				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
-					(reference "Q1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 76.2 55.88 0)
 		(unit 1)
@@ -5767,6 +5736,100 @@
 			(project "IMPETUS_Board"
 				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
 					(reference "C14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Transistor_FET:BUK9M6R6-30EX")
+		(at 200.66 101.6 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "964fd83f-57a5-4ba5-b7b0-f3d9bcdb13c4")
+		(property "Reference" "Q6"
+			(at 207.01 100.3299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "BUK9M6R6-30EX"
+			(at 207.01 102.8699 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:LFPAK33"
+			(at 205.74 103.505 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+			)
+		)
+		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/BUK9M6R6-30E.pdf"
+			(at 205.74 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Description" "70A Id, 30V Vds, N-Channel TrenchMOS MOSFET, 5.3mOhm Ron, 18nC Qqd, -55 to 175 °C, LFPAK33"
+			(at 200.66 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "734e66cb-e80c-4f18-aff6-81360c6db7ce")
+		)
+		(pin "3"
+			(uuid "e4daddae-3fa0-4517-add8-76185a253144")
+		)
+		(pin "4"
+			(uuid "1090f647-3ffb-48a4-85fa-6175e490a78c")
+		)
+		(pin "5"
+			(uuid "4e63faac-f6a5-4af9-b461-6cdeaab6ff1e")
+		)
+		(pin "2"
+			(uuid "9d8301fa-3dea-4234-a55a-dcc590867fcc")
+		)
+		(instances
+			(project "IMPETUS_Board"
+				(path "/fba840f3-104b-487e-8170-c93f3e7fdc0e/94d893e1-bfcb-49e0-adba-95c77add5abc"
+					(reference "Q6")
 					(unit 1)
 				)
 			)

@@ -470,7 +470,7 @@
         "uuid": "fba840f3-104b-487e-8170-c93f3e7fdc0e"
       }
     ],
-    "used_designators": "#PWR1-68,BT1,C1-51,D1-6,F1,IC1,J1-4,L1-3,M1,NT1-2,Q1-4,R1-53,U1-7",
+    "used_designators": "#PWR1-74,BT1,C1-55,D1-11,F1,IC1,J1-4,L1-3,M1,NT1-2,Q1-6,R1-60,U1-8",
     "variants": []
   },
   "sheets": [
@@ -505,6 +505,10 @@
     [
       "aea48d15-cc6c-4003-ae6a-bc06f0ff6be6",
       "IO"
+    ],
+    [
+      "154a15f8-d8d5-45e6-ae95-a155486665e6",
+      "peripherals"
     ]
   ],
   "text_variables": {},

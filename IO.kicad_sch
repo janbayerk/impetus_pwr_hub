@@ -1855,9 +1855,9 @@
 		)
 		(uuid "64c87fba-6d5f-4a87-aa4c-4b4c81a20000")
 	)
-	(text "pullups on esp board?\n"
+	(text "pullups on esp and raspi board?\n"
 		(exclude_from_sim no)
-		(at 75.438 57.404 0)
+		(at 79.502 57.404 0)
 		(effects
 			(font
 				(size 0.762 0.762)
@@ -1877,7 +1877,7 @@
 	)
 	(text "pin9 is GND close to ESP32\nit transfers no current, thus\nkeeps the pwm signal offset free\n\n"
 		(exclude_from_sim no)
-		(at 47.244 60.706 0)
+		(at 37.846 60.706 0)
 		(effects
 			(font
 				(size 0.762 0.762)
@@ -2226,6 +2226,30 @@
 		(uuid "29afe23c-9263-4c15-9740-240ef1274235")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 153.4667 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
+	(global_label "eFUSE_IMON"
+		(shape input)
+		(at 39.37 128.27 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "317b3eb5-b8f7-4696-96c4-b572439e204e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 24.8338 128.27 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
