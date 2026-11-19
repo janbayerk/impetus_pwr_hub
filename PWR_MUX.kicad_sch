@@ -3110,6 +3110,50 @@
 				)
 			)
 		)
+		(property "Sim.Library" "SIM_PRJ/SPICE/TPS2121_TRANS_ngspice.lib"
+			(at 127 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Name" "TPS2121_TRANS"
+			(at 127 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Device" "SUBCKT"
+			(at 127 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Pins" "1=VOUT_0 2=IN2 3=CP2 4=OV2 5=OV1 6=PR1 7=IN1 8=VOUT_1 9=ST 10=ILIM 11=SS 12=GND"
+			(at 127 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "7"
 			(uuid "c85f62de-59be-40a2-8810-550e5a06a76f")
 		)

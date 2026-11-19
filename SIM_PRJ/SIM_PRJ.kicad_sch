@@ -6,6 +6,52 @@
 	(paper "A4")
 	(lib_symbols)
 	(sheet
+		(at 101.6 81.28)
+		(size 31.75 31.75)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "2ef72695-ebff-4b94-a88d-19f2fd84224a")
+		(property "Sheetname" "efuse"
+			(at 101.6 80.5684 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "efuse.kicad_sch"
+			(at 101.6 113.6146 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "SIM_PRJ"
+				(path "/4516d3cb-1c37-4f16-ac30-ec51d6f374bb"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 33.02 29.21)
 		(size 31.75 30.48)
 		(exclude_from_sim no)

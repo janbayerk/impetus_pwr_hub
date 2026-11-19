@@ -438,7 +438,7 @@
         "uuid": "4516d3cb-1c37-4f16-ac30-ec51d6f374bb"
       }
     ],
-    "used_designators": "#PWR1-4,#PWR32-33,#PWR35-36,#PWR42,#PWR64,C29,C36,C41,C47,J1-3,Q4,R1,R29-32,R35-37,R49-51,S1,U2,V1-3",
+    "used_designators": "#PWR1-4,#PWR32-33,#PWR35-42,#PWR64,C29,C36,C38-43,C47,D3,D5,J1-4,Q3-4,R1,R29-32,R35-44,R49-53,S1,U2,U6,V1-3",
     "variants": []
   },
   "sheets": [
@@ -449,6 +449,10 @@
     [
       "75b9c537-9914-4f7c-9b0f-fe8f1300a292",
       "Powermux"
+    ],
+    [
+      "2ef72695-ebff-4b94-a88d-19f2fd84224a",
+      "efuse"
     ]
   ],
   "text_variables": {},

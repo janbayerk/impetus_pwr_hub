@@ -1,0 +1,921 @@
+
+* TPS259830ONRGE (circuit-breaker variant, derived from TPS259830LNRGE)
+*****************************************************************************
+* (C) Copyright 2020 Texas Instruments Incorporated. All rights reserved.                                            
+*****************************************************************************
+** This model is designed as an aid for customers of Texas Instruments.
+** TI and its licensors and suppliers make no warranties, either expressed
+** or implied, with respect to this model, including the warranties of 
+** merchantability or fitness for a particular purpose.  The model is
+** provided solely on an "as is" basis.  The entire risk as to its quality
+** and performance is with the customer
+*****************************************************************************
+*
+* This model is subject to change without notice. Texas Instruments
+* Incorporated is not responsible for updating this model.
+*
+*****************************************************************************
+*
+** Released by: Texas Instruments Inc.
+* Part: TPS259830ONRGE (derived from TI model TPS259830LNRGE, Final 1.10)
+* Date: 09OCT2023
+* Model Type: TRANSIENT
+* Simulator: PSPICE
+* Simulator Version: 17.4-2019 S064
+* EVM Order Number: NA
+* EVM Users Guide: SLUUCW7
+* Datasheet: SLVSHH5
+*
+* Model Version: Final 1.10
+*
+*****************************************************************************
+*
+* Updates:
+*
+* Derived circuit-breaker version (not a TI release):
+*     1. Overcurrent response = circuit breaker (datasheet SLVSHH5C, 7.3.3.2):
+*        IFT > IOUT > ILIM discharges ITIMER; after dV_ITIMER the FET is
+*        turned off and an internal fault is latched (7.3.8). No active
+*        current regulation. Latch-off / auto-retry via RETRY_DLY / NRETRY
+*        as in the original model.
+*        Implemented by hard-wiring TI's internal switch CB=1; the global
+*        '.PARAM cb' was removed. Additional fixes for the CB path:
+*        a) The internal output crowbar (S10, 0.01 mOhm OUT->GND) is disabled.
+*           TI fired it on fast-trip/thermal/>60 A (and with CB=1 also on a CB
+*           trip) while the FET was still on -> non-physical kA shoot-through
+*           from IN (2.7 kA on CB trip, 8.4 kA on output short) and ngspice
+*           convergence failures. The FET is switched off by the internal gate
+*           pull-down; OUT then discharges through the load / short.
+*        b) The CB fault is held until the FET has been off for 5 us and is
+*           then released (CB latch reset), so the fault logic always sees a
+*           clean fault pulse and latch-off / auto-retry (RETRY_DLY, NRETRY)
+*           work.
+*        c) The gate clamp diode D7 now has a 1 kOhm series resistor (was
+*           ideal). Without the crowbar, D3/D7 otherwise short the output into
+*           an ideal source at turn-off (ngspice "timestep too small").
+*           Effect in normal operation: about 20 mV more gate voltage.
+*        d) dVdT node: 10 pF internal capacitance and a softer clamp diode
+*           D1 (N=1 instead of 0.1). Without them the node jumps from 23 V to
+*           0 V at turn-off -> ngspice "timestep too small" (V_U2_V10).
+*           Plus 10k load on the ideal source V_U2_V10 (its pA branch current
+*           could not converge below the round-off noise of the power path).
+*     2. ngspice robustness: both TABLE E-sources rewritten as VALUE{pwl()}
+*        (same values, input clamped to table range). ngspice would otherwise
+*        create XSPICE devices and set trtol=1 globally -> stalls with tiny
+*        timesteps. Also '.OPTIONS XTRTOL=7 METHOD=GEAR' (GLOBAL!): ngspice maps
+*        the VSWITCH switches to XSPICE as well (xtrtol), and trapezoidal
+*        integration rings on the 1 ns logic RC stages and flips latches (gear).
+*        NOTE: pwl() and xtrtol are ngspice syntax -> file is meant for
+*        ngspice/KiCad, not PSpice.
+*        Retry-counter expressions (E_U5_ABM1/2/4/6) use bounded divisions;
+*        with NRETRY at GND TI's version produced ~1e7..1e15 V internal nodes.
+*        ILIM threshold (246u*I*1460)/V(ILIM) was 0/0 at IOUT=0 (thermal
+*        shutdown from current limit aborted); ILIM pin current now has a floor
+*        at IOUT=10 mA (2.46 uA), so the threshold stays 1460/RILIM+0.11.
+*        Comparators (COMP/COMPHYS_BASIC_GEN_CB) continuous (tanh, 10 uV) instead
+*        of hard IF(); hard ones chattered on slow ramps (thermal timer).
+*        Same for the threshold stage of INV/BUF_DELAY and ONE_SHOT_CB timing.
+*        SR latches without clamp diodes: while S/R is active the latch node
+*        is pulled linearly to VDD/VSS (10 ohm, tau 10 ns). TI's +-5 A against
+*        N=0.1 diodes made latches flip under trap (no auto-retry).
+*        RETRY_DLY idle sink fades out at 0 V (was pulling the pin to -39 mV,
+*        making later retry delays 5 % longer -> only 3 instead of 4 retries).
+*        FAULT_OK/THERMAL_OK are cleared by the retry pulse (otherwise RETRY_DLY
+*        was not discharged at the next fault -> retries 2..n came too early).
+*     3. ONE_SHOT_CB rebuilt: TI's self-holding loop OUT->CH->OUT has two valid
+*        solutions and ngspice fired spurious pulses (resetting latches). Now
+*        the pulse state is stored on a capacitor (set by IN, reset when the
+*        timing node is done); pulse width unchanged (T x 1 ns).
+*
+*     KiCad/ngspice usage:
+*       - Simulator settings: compatibility mode 'PSpice' or 'LTspice and PSpice'
+*         (needed for the VSWITCH switches and PARAMS: syntax).
+*       - Subcircuit TPS259830ONRGE, pin order see .SUBCKT line below.
+*       - The file sets METHOD=GEAR (do not override with trap).
+*     Notes for simulation (ngspice):
+*       - Set a maximum time step <= 5 us (KiCad: transient 'max step', or a
+*         time step of 1 us). Several internal timing pulses are 0.5..1.5 us
+*         wide; with a coarse automatic step they can be missed (late trip,
+*         no retry). Validated with max step 0.5 / 1 / 2 / 5 us.
+*       - Validated (VIN 10/13.2/14.6 V, RILIM 82 ohm, CITIMER 4.7 nF/open):
+*         CB trip after ITIMER, transient blanking, latch-off, 4 retries with
+*         RETRY_DLY/NRETRY open, infinite retries with CRETRY_DLY=220 pF,
+*         output short (fast-trip), start into overload with current limit
+*         and thermal shutdown + retries.
+*       - TI's ~40 A / 10 ns blip on IIN at enable/retry (internal 100 nF VIN
+*         sample cap recharged via the IN pin) removed: cap fed from an
+*         internal copy of VIN.
+*
+*     4. All helper subcircuits and global models renamed with suffix '_CB'
+*        so this file can be included together with the TI L model.
+*
+* Final 1.10
+* The follwing features are modified as per the latest datasheet.
+*     1. Current limit (ILIM)- Current at ILIM pin is made a function of IOUT.
+*     2. Retry and Nretry functionality
+*     3. dVdT functionality
+*     4. Fast trip functionality
+*
+* Final 1.00
+* Release to Web.
+*
+*****************************************************************************
+*
+* Model Usage Notes:
+*
+* A. Features have been modelled
+*	1. Startup
+*	2. Programmable Current Limit and Fast-trip
+*	3. IMON Current Indicator Output 
+*	4. Undervoltage Lockout
+*	5. Overvoltage Lockout 
+*	6. Programmable dV/dT Control
+*	7. Power Good
+*   8. Auto-retry and latch off functionality
+*	9. Thermal Shutdown time vs Power Dissipation
+*
+* B. Features haven't been modelled
+*	1. Input supply current vs Input voltage during Normal operation
+*	2. Input supply current vs Input voltage at Shutdown
+*	3. Temperature dependent characteristics are not modelled. Thermal Shutdown Time vs Power Dissipation
+*      is modelled such that temperature is not taken into account and only Power dissipation vs time is taken.
+*
+*****************************************************************************
+
+* source TPS259830ONRGE_TRANS (derived from TPS259830LNRGE_TRANS)
+.SUBCKT TPS259830ONRGE dVdT/BGATE EN_UVLO GND ILIM IMON IN0 IN1 IN2 IN3 ITIMER
++  NRETRY OUT0 OUT1 OUT2 OUT3 OUT4 OUT5 OUT6 OUT7 OVLO PG RETRY_DLY  
+R_R13         OUT6 N16900450  1m TC=0,0 
+R_R2         IN1 VIN  1m TC=0,0 
+R_R6         OUT3 N16900450  1m TC=0,0 
+R_R14         OUT7 N16900450  1m TC=0,0 
+R_R7         OUT4 N16900450  1m TC=0,0 
+C_U5_C5         0 U5_RETRY_LATCH  1n  
+X_U5_U58         U5_N17450689 N17046027 U5_N17085780 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U5_U68         U5_N17485218 RETRY U5_N17084667 AND2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U5_U6         U5_FAULT_OK THERMAL_OK U5_RETRY_ST OR2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U5_U40         N16975289 N16982382 N17012372 U5_SHORT_FAULT OR3_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+R_U5_R8         U5_N17197284 U5_DELTAI  1  
+R_U5_R3         U5_N17084518 U5_RETRY_LATCH  5  
+X_U5_U16         U5_NRETRY_OPEN U5_RETRY_LATCH U5_ZERO_I_WINDOW N17299133
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U5_S8    U5_RETRY_LATCH 0 U5_N17143187 U5_N17162512 FLTb_U5_S8_CB 
+X_U5_S3    N17046027 0 NRETRY 0 FLTb_U5_S3_CB 
+X_U5_U65         U5_SHORT_FAULT U5_N17587018 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=1.5u
+R_U5_R1         U5_N17084516 U5_RETRY_S  5  
+E_U5_E6         U5_N17252286 0 U5_N17196345 0 1E-3
+X_U5_U18         U5_N17084667 U5_N17084916 U5_N17084518 N17085503
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+V_U5_V8         U5_N17084857 0 1
+D_U5_D8         0 RETRY_DLY D_D1_CB 
+X_U5_U15         U5_RETRY_ST N17027619 U5_DT_DETECT N17084996
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+V_U5_V19         U5_N17085594 0 5m
+X_U5_U51         U5_RETRY_ST U5_N17287983 BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=18u
+D_U5_D5         RETRY_DLY U5_N17085407 D_D1_CB 
+X_U5_U36         U5_N17085362 NRETRY U5_N17085594 U5_RETRY_FIN
++  COMPHYS_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+* CB variant: FAULT_OK also cleared by the retry pulse
+X_U5_U20         U5_N17586965 U5_FOK_R U5_FAULT_OK N17586963
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+E_U5_ABM4         U5_N17197284 0 VALUE {
++  (V(U5_CNRETRY_VALUE)*V(U5_DELTADV)/MAX(V(U5_DT_LATCH),1n))    }
+X_U5_S4    N17046027 0 RETRY_DLY 0 FLTb_U5_S4_CB 
+X_U5_U61         N17046027 U5_N17450689 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=1.5u
+D_U5_D7         U5_N17139028 U5_N17140188 D_D1_CB 
+G_U5_ABMII1         U5_N17085407 RETRY_DLY VALUE { IF(V(U5_DT_DETECT) >
++  0.5,16.02n, 0)     }
+X_U5_U69         RETRY U5_N17485218 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=1.5u
+X_U5_S1    U5_RETRY_ST 0 RETRY_DLY 0 FLTb_U5_S1_CB 
+E_U5_E4         U5_N17143187 0 U5_N17139028 0 1
+E_U5_ABM5         U5_N17289157 0 VALUE { if(V(U5_N17288290)>0.5 &
++  V(U5_NRETRY_S)>V(U5_RETRY_S),1,0)    }
+X_U5_U37         U5_N17085046 U5_RETRY_FIN RETRY AND2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+C_U5_C12         0 U5_NRETRY_OPEN  1n  
+R_U5_R5         U5_N17252286 U5_DELTADV  1  
+R_U5_R4         U5_N170847961 U5_COMP  1  
+X_U5_U5         U5_SHORT_FAULT THERMAL_FAULT U5_FLT_A OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+C_U5_C7         0 U5_N17139028  1u IC=0 
+X_U5_U8         U5_N17369116 U5_N17369465 U5_N17368848 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U5_U55         N17046027 U5_N17369465 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+C_U5_C2         0 NRETRY  4.15p IC=0 
+G_U5_G1         U5_N17140188 U5_N17139028 U5_DT_DETECT 0 1u
+E_U5_ABM6         U5_N17325071 0 VALUE {
++  if(V(U5_NRETRY_OPEN_LATCH)>0.5,if(V(U5_ZERO_I_WINDOW)>0.5,16.02n/4,((16.02n/4)
++   
++ -(4p*244m/MAX(V(U5_DT_LATCH),1n)))),V(U5_DELTAI))   }
+X_U5_U13         U5_RETRY_ST N17027619 U5_N17085056 N17085052
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+C_U5_C8         0 U5_DT_LATCH  1n  
+X_U5_U62         U5_N17455381 RETRY U5_N17085824 AND2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U5_U60         U5_N17442959 U5_RETRY_LATCH U5_N17369116 NOR2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+R_U5_R10         U5_N17325071 U5_DELTAI_1  1  
+C_U5_C6         0 U5_COMP  10n IC=0 
+R_U5_R9         U5_N17289157 U5_NRETRY_OPEN  1  
+G_U5_ABMII2         U5_N17084857 NRETRY VALUE { IF(V(U5_N17085056) >
++  0.5,(16.02n/4)-V(U5_DELTAI_1),0)     }
+C_U5_C11         0 U5_DELTADV  1n  
+V_U5_V18         U5_N17085429 0 5mVdc
+X_U5_U19         U5_NRETRY_OPEN U5_N17368848 U5_NRETRY_OPEN_LATCH N17320320
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+V_U5_V6         U5_N17085407 0 1.05
+C_U5_C13         0 U5_DELTAI_1  1n  
+X_U5_U35         RETRY_DLY U5_N17085362 U5_N17085429 U5_N17085046
++  COMPHYS_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U5_U71         U5_SHORT_FAULT U5_N17586967 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=1.5u
+E_U5_E1         U5_N17084786 0 RETRY_DLY 0 1
+R_U5_R6         U5_N17162512 U5_DT_LATCH  1  
+* CB variant: idle sink only down to 0 V (equal start level for every retry cycle)
+G_U5_ABMII4         RETRY_DLY 0 VALUE { IF(V(N17027619) > 0.5,3.24n*0.5*(1+tanh(V(RETRY_DLY)*1000)), 0)     }
+C_U5_C4         0 U5_NRETRY_S  10n  
+X_U5_U66         U5_N17478113 U5_N17287983 U5_N17288290 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+E_U5_E2         U5_N17084779 0 NRETRY 0 1
+X_U5_U72         U5_N17586967 U5_SHORT_FAULT U5_N17586965 NOR2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+X_U5_U63         RETRY U5_N17455381 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=1.5u
+D_U5_D6         NRETRY U5_N17084857 D_D1_CB 
+X_U5_U59         U5_RETRY_LATCH U5_N17442959 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=1u
+C_U5_C9         0 U5_CNRETRY_VALUE  1n  
+X_U5_U4         U5_N17085780 U5_N17085824 U5_N17084660 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+C_U5_C3         0 U5_RETRY_S  10n  
+E_U5_ABM1         U5_N170847961 0 VALUE { IF(V(U5_RETRY_LATCH)>0.5,
++  MIN(V(U5_RETRY_S)/(MAX(V(U5_NRETRY_S),0)+1e-6),2048),0)    }
+X_U5_U49         U5_RETRY_FIN U5_N17084916 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U5_S7    U5_RETRY_LATCH 0 U5_N17084779 U5_N17085471 FLTb_U5_S7_CB 
+X_U5_U64         U5_N17587018 U5_SHORT_FAULT U5_N17587049 AND2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+C_U5_C1         0 RETRY_DLY  4.1p IC=0 
+R_U5_R7         U5_N17193190 U5_CNRETRY_VALUE  1  
+X_U5_U14         U5_SHORT_FAULT U5_N17084660 U5_FLT_O N17084973
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+V_U5_V7         U5_N17085362 0 0.75
+E_U5_ABM2         U5_N17193190 0 VALUE {
++  MIN((16.04n*V(U5_DT_LATCH))/(4*MAX(V(U5_NRETRY_S),1u)),1e3)    }
+V_U5_V22         U5_N17140188 0 5
+X_U5_S6    U5_RETRY_LATCH 0 U5_N17084786 U5_N17084516 FLTb_U5_S6_CB 
+R_U5_R2         U5_N17085471 U5_NRETRY_S  5  
+X_U5_U10         U5_FLT_A U5_N17084660 N17045948 N17027619 SRLATCHRHP_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+C_U5_C10         0 U5_DELTAI  1n  
+X_U5_U67         U5_N17287983 U5_N17478113 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=1u
+* CB variant: TABLE rewritten as pwl() (avoids XSPICE / trtol=1 in ngspice)
+E_U5_E3 U5_N17196345 0 VALUE { pwl(max(min(V(U5_COMP, 0),1024),4), 4,0, 5,110, 9,39, 12,17, 16,0, 17,33, 40,7.14, 56,1.7, 64,0, 65,8.64, 180,1.24, 256,0, 261,2.14, 600,0.520, 853,0.15, 1024,0) }
+R_R3         IN2 VIN  1m TC=0,0 
+R_R11         OUT0 N16900450  1m TC=0,0 
+X_U3_U46         U3_N16888801 U3_N16889257 U3_N16889241 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U3_U14         U3_N16889268 U3_RST N16982822 N16889345 SRLATCHRHP_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+E_U3_ABM5         N17012372 0 VALUE { if(V(N16982954)>25,1,0)    }
+X_U3_U35         TIMER_ST U3_N16888801 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U3_H3    U3_N16889390 ILIM U3_VILIM_SENSE 0 ILIM_U3_H3_CB 
+X_U3_U21         U3_DEVICE_EN U3_N17066050 ONE_SHOT_CB PARAMS:  T=1500
+X_U3_U47         IFAST_RESET U3_N16970038 BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=200n
+C_U3_C2         0 ITIMER  1p  
+X_U3_U34         U3_N16889528 ITIMER U3_N16889465 U3_TIMER_OVER
++  COMPHYS_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U3_U17         U3_N17066849 U3_CURRENT_LIMIT_RESTART BUF_DELAY_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=0.5 DELAY=500n
+X_U3_U52         U3_TIMER_ST_PULSE U3_N17033875 U3_SET_1 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+V_U3_V6         U3_VINT 0 2.5
+V_U3_V7         U3_N16889528 0 1.53
+V_U3_V18         U3_N16889465 0 5m
+G_U3_ABM2I2         ITIMER 0 VALUE { IF(V(U3_TIMER_EN) > 0.5, 2u, 0)     }
+X_U3_U44         U3_TIMER_OK PG U3_N16956421 U3_TIMER_EN AND3_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+E_U3_ABM1         N16982382 0 VALUE { IF(V(ITIMER) <0.5, 1, 0)    }
+X_U3_U36         DEVICE_EN_B U3_DEVICE_EN INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U3_U16         TIMER_ST U3_N16936020 BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=400n
+X_U3_U9         N16982569 N16982954 TIMER_ST COMP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5
+X_U3_U48         U3_CURRENT_LIMIT_RESTART GHI_1 U3_N17033875 OR2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+X_U3_U11         U3_SET_1 U3_N16889241 U3_TIMER_OK N16888868
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+G_U3_G1         0 U3_N16889390 VALUE { 246e-6*MAX(V(N16982569),10m) }
+X_U3_U19         U3_N16936020 U3_TIMER_ST_PULSE ONE_SHOT_CB PARAMS:  T=1500
+X_U3_U45         U3_N16964107 DEVICE_EN_B U3_N16964280 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U3_U12         U3_N17066050 TIMER_ST U3_N17066849 N17067033
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U3_S1    U3_TIMER_EN 0 U3_VINT ITIMER ILIM_U3_S1_CB 
+X_U3_U24         U3_TIMER_OK U3_N16964107 ONE_SHOT_CB PARAMS:  T=1500
+X_U3_U43         N17023688 U3_N16956421 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+* CB variant: CB latch is also reset 5 us after the switch is disabled (SWEN low)
+X_U3_U50         U3_N16964280 U3_N16970038 U3_SWEN_OFF_DLY U3_RST OR3_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+X_U3_U151         SWEN U3_SWEN_B INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U3_U152         U3_SWEN_B U3_SWEN_OFF_DLY BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=5u
+X_U3_U20         U3_TIMER_OVER U3_N16889257 ONE_SHOT_CB PARAMS:  T=1500
+X_U3_U42         U3_N16889257 N17023688 U3_N16889268 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+E_U3_ABM4         N16982954 0 VALUE { ((246u*MAX(V(N16982569),10m)*1460)/MAX(V(ILIM),1e-12))+0.11  
++   }
+R_R8         IN3 VIN  1m TC=0,0 
+X_U1_U1         U1_EN_UVLO_B U1_EN_TH U1_UVLO_OK COMP_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5
+X_U1_U23         U1_UVP_DEL U1_ENCIR_DEL U1_N16806952 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+E_U1_E4         U1_OVLO_INT 0 OVLO GND 1
+X_U1_U27         IFAST_ST U1_N16872139 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U1_U22         U1_N16878464 U1_OVPB_DELAY INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+E_U1_ABM2         U1_UVP_TH 0 VALUE { IF ( V(U1_UVP) < 0.5, 2.53, 2.42)    }
+E_U1_E2         U1_EN_UVLO_B 0 EN_UVLO GND 1
+X_U1_U2         U1_EN_UVLO_B U1_N16850296 U1_N16850701 COMP_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=0.5
+E_U1_ABM1         U1_EN_TH 0 VALUE { IF ( V(U1_UVLO_OK) < 0.5, 1.2, 1.1)    }
+X_U1_U17         U1_N16806952 N17027619 U1_OVPB_DELAY U1_N16871925
++  AND3_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+X_U1_U4         U1_VIN_UV_B U1_N16874362 U1_N16874371 COMP_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=0.5
+X_U1_U3         U1_VIN_UV_B U1_UVP_TH U1_UVP COMP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5
+X_U1_U19         U1_UVLO_OK U1_ENCIR_DEL BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5 DELAY=5u
+V_U1_V1         U1_N16850296 0 0.7
+E_U1_ABM3         U1_OVP_TH 0 VALUE { IF ( V(U1_OVPB) < 0.5, 1.2, 1.1)    }
+X_U1_U7         U1_OVLO_INT U1_OVP_TH U1_OVPB COMP_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5
+X_U1_U25         U1_N16806952 DEVICE_EN_B INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+V_U1_V2         U1_N16874362 0 2.42
+X_U1_U28         U1_N16850701 U1_N16874371 N17046027 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U1_U26         U1_N16871925 U1_N16872139 SWEN AND2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U1_U29         U1_OVPB U1_N16878464 BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=2.7u
+E_U1_E3         U1_VIN_UV_B 0 VIN GND 1
+X_U1_U18         U1_UVP U1_UVP_DEL BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=5u
+R_R4         OUT1 N16900450  1m TC=0,0 
+R_R10         IN0 VIN  1m TC=0,0 
+R_R5         OUT2 N16900450  1m TC=0,0 
+R_R9         OUT5 N16900450  1m TC=0,0 
+D_U2_D4         U2_N17512963 VIN D_D1_CB 
+X_U2_U135         RETRY U2_IFAST_RETRY U2_N18643280 OR2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U2_U124         N17045771 U2_N18059605 ONE_SHOT_CB PARAMS:  T=1500  
+X_U2_U12         U2_N18059643 U2_N18059669 U2_TURN_OFF N18059768
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U34         N16982569 N16982954 U2_N17513377 U2_CTRL COMPHYS_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+C_U2_C8         0 U2_N18195515  1u  
+X_U2_U122         THERMAL_FAULT U2_N18059605 U2_N18059681 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_S6    U2_N17804489 0 U2_GATE U2_N17512963 MOS_U2_S6_CB 
+E_U2_E2         U2_ENT 0 DVDT/BGATE 0 1
+E_U2_ABM7         U2_VOUT_ZERO 0 VALUE { IF( V(U2_N18131434) < 0.5 , 1, 0)    }
+X_U2_U131         U2_N18372648 U2_N18398079 U2_IFAULT AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+G_U2_ABMII3         U2_N17513227 DVDT/BGATE VALUE { IF(V(SWEN) > 0.5, 4.7u,0)  
++    }
+V_U2_V21         U2_N18059866 0 60
+X_U2_U109         U2_IFAST_ST_CTL U2_N17737817 N17023688 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U8         U2_IFAST-TRIP_TIME U2_2 U2_N17737817 N17738079
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+E_U2_E3         U2_N18131434 0 N16900450 0 1
+X_U2_U130         0 U2_IFAULT U2_GHI OR2_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+D_U2_D9         U2_N18059704 U2_N18059712 D_D1_CB 
+* CB variant: TABLE rewritten as pwl() (avoids XSPICE / trtol=1 in ngspice)
+E_U2_U100_E1 U2_U100_DLY 0 VALUE { pwl(max(min(V(U2_U100_PW_IN,0),30),3), 3,100m, 5,50m, 5.25,44.04m, 10,14m, 15,7m, 20,5m, 30,2m) }
+X_U2_U100_U8         U2_U100_N16817433 U2_U100_COMP U2_U100_TSD AND2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+C_U2_U100_C3         U2_U100_N16827529 0  1n IC=0 TC=0,0 
+C_U2_U100_C2         U2_U100_PW_OUT 0  1n IC=0 TC=0,0 
+X_U2_U100_U7         U2_U100_TSD U2_U100_RESET THERMAL_FAULT N16836154
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U100_U2         U2_U100_N16827529 U2_U100_N16828510 U2_U100_RESET
++  COMP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+V_U2_U100_V6         U2_U100_N16827549 0 2.5
+X_U2_U100_S1    U2_U100_N16817433 0 U2_U100_N16817737 0
++  Thermal_Fault_U2_U100_S1_CB 
+G_U2_U100_ABMII3         U2_U100_N16827549 U2_U100_N16827529 VALUE {
++  IF(V(THERMAL_FAULT) > 0.5, 10u,0)     }
+R_U2_U100_R7         U2_U100_PW_IN U2_U100_N16826325  1 TC=0,0 
+G_U2_U100_ABMI1         0 U2_U100_N16817737 VALUE { (0.5n/V(U2_U100_DLY))    }
+* CB variant: THERMAL_OK also cleared by the retry pulse
+X_U2_U100_U10         U2_U100_RESET U2_U100_TOK_R THERMAL_OK N16843073
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U100_U25         U2_U100_PW_OUT U2_U100_N16817655 INV_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+C_U2_U100_C4         U2_U100_PW_IN 0  1n IC=0 TC=0,0 
+X_U2_U100_S5    THERMAL_FAULT 0 U2_U100_N16827529 0 Thermal_Fault_U2_U100_S5_CB 
+C_U2_U100_C1         U2_U100_N16817737 0  1n IC=0 TC=0,0 
+X_U2_U100_U9         U2_U100_PW_OUT U2_U100_N16817655 U2_U100_N16817433
++  N16817657 SRLATCHSHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U100_U1         U2_U100_N16817737 U2_U100_N16817791 U2_U100_COMP
++  COMP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+E_U2_U100_ABM1         U2_U100_N16826325 0 VALUE { (V(VIN) - V(U2_VOUT_INT) ) *
++  V(N16982569)    }
+V_U2_U100_V2         U2_U100_N168179850 0 1
+V_U2_U100_V1         U2_U100_N16817791 0 0.5
+D_U2_U100_D7         U2_U100_N16827529 U2_U100_N16827549 D_D1_CB 
+E_U2_U100_ABM2         U2_U100_N16817681 0 VALUE { IF(V(U2_U100_PW_IN) >= 2.7 ,
++  1, 0)    }
+D_U2_U100_D5         0 U2_U100_N16817737 D_D1_CB 
+D_U2_U100_D6         U2_U100_N16817737 U2_U100_N168179850 D_D1_CB 
+R_U2_U100_R6         U2_U100_PW_OUT U2_U100_N16817681  10 TC=0,0 
+V_U2_U100_V3         U2_U100_N16828510 0 1
+E_U2_ABM2         U2_N17513458 0 VALUE { IF(V(IFAST_ST) > 0.5 & V(U2_TURN_OFF)
++  > 0.5 , V(U2_N18747129),V(U2_N18747143))    }
+C_U2_C9         0 U2_N18190774  1u  
+C_U2_C5         0 U2_N17794741  1u  
+* CB variant: no active current-limit gate regulation (term with CB<0.5 removed)
+G_U2_ABM2I4         U2_GATE U2_N17512963 VALUE { IF(
++  (V(N17023688) > 0.5 & V(U2_CTRL) > 0.5) |
++  (V(U2_TURN_OFF_DEL) >0.5 & V(U2_CTRL) > 0.5)|(V(PG) <0.5 & V(U2_CTRL) >
++  0.5),LIMIT((V(N16982569)-V(N16982954))*0.5m,0,1m),0)    }
+X_U2_U14         U2_N18643280 TIMER_ST N18378615 U2_N18372648
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_H1    U2_N17513127 N16900450 N16982569 0 MOS_U2_H1_CB 
+V_U2_V13         U2_N17513414 VIN 3.6
+X_U2_U9         U2_VOUT_ZERO U2_N17863938 U2_IFAST_ALLOW_B N17863639
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U102         U2_TURN_OFF U2_N17809019 U2_B U2_N17804489 OR3_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+E_U2_ABM10         U2_N18190814 0 VALUE { IF( V(N16982569)>V(U2_IFAST_TH) &
++  V(U2_IFAST_ALLOW_B) < 0.5 & V(U2_INPUT_TRAN) <0.5 , 1,0)    }
+X_U2_U143         U2_N18553403 IFAST_ST U2_IFAST_RETRY NOR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U118         THERMAL_FAULT U2_N18059640 U2_N18059605 U2_N18059669
++  OR3_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U107         U2_OVER_60 U2_VOUT_KEEP U2_N18059643 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+E_U2_ABM9         U2_VOUT_KEEP 0 VALUE { IF( V(U2_N18081501) <0.5, 0, 1)    }
+E_U2_ABM8         U2_N18050548 0 VALUE { IF( V(VIN) - V(U2_VIN_S) > 0.05  , 1,
++  0)    }
+G_U2_ABMII1         U2_N17513458 U2_GATE VALUE { IF(V(SWEN) > 0.5 &
++  V(IFAST_ST)<0.5 ,20u,0)     }
+X_U2_U11         U2_N18059643 U2_N18059681 U2_N18059712 N18059687
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+D_U2_D3         U2_N17512963 U2_GATE D_D1_CB 
+R_U2_R9         U2_N17737817 U2_N17794741  1.44k  
+X_U2_U123         U2_TURN_OFF_CTL U2_N18059712 U2_TURN_OFF_DEL AND2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U113         SWEN U2_N17809019 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U2_U120         U2_TURN_OFF_CTL U2_N18059640 ONE_SHOT_CB PARAMS:  T=500  
+V_U2_V9         U2_N17512844 N16900450 0.32
+V_U2_V14         U2_N18747098 VIN 4
+M_U2_M2         VIN U2_GATE U2_N17512963 U2_N17512963 NMOS01_CB           
+E_U2_E5         U2_VOUT_INT 0 N16900450 0 1
+X_U2_U1         U2_GATE U2_N17513414 U2_N17513090 COMP_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5
+X_U2_U35         N16982569 U2_N18059866 U2_N18059845 U2_OVER_60
++  COMPHYS_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+R_U2_R11         U2_N18195512 U2_N18195515  93.77  
+X_U2_U142         PG U2_N18534784 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+D_U2_D10         U2_N18190774 U2_N18190771 D_D1_CB 
+* CB variant: series 1k in gate clamp path (convergence / no hard output discharge)
+D_U2_D7         U2_GATE U2_N17513458_R D_D1_CB 
+R_U2_R13         U2_N17513458_R U2_N17513458  1k
+V_U2_V18         U2_N17513377 0 10m
+V_U2_V19         U2_N17652583 0 0.651
+X_U2_S5    SWEN 0 DVDT/BGATE 0 MOS_U2_S5_CB 
+* CB variant: output crowbar S10 disabled (control node tied low)
+R_U2_CNULL         U2_C 0  1
+R_U2_R10         U2_N18059712 U2_N18059704  432  
+X_U2_U108         THERMAL_FAULT U2_N17729253 U2_N17729754 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U138         THERMAL_FAULT U2_N18471454 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+* CB variant: softer dVdT clamp diode + 10 pF on dVdT node (ngspice convergence)
+D_U2_D1         DVDT/BGATE U2_N17513227 D_SOFT_CB 
+C_U2_CDV         DVDT/BGATE 0  10p
+V_U2_V20         U2_N18059845 0 10m
+R_U2_R12         U2_N18190771 U2_N18190774  2.16  
+X_U2_U101         IFAST_ST N16975289 THERMAL_FAULT U2_B OR3_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U136         U2_N18471471 U2_N18471454 U2_N18474953 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+* CB variant: ITIMER expired with IOUT > ILIM -> circuit-breaker fault.
+* The fault is held (U2_CB_HOLD) until the FET has been off for 5 us, so the
+* fault/retry logic always sees a pulse > 1.5 us.
+X_U5_U153         U5_N17587049 U5_N17085824 U5_FOK_R OR2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U2_U100_U154         U2_U100_TSD U5_N17085824 U2_U100_TOK_R OR2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+E_U2_ABM5         N16975289 0 VALUE { IF( V(N16982822) > 0.5 | V(U2_CB_HOLD) > 0.5, 1
++  ,0)    }
+X_U2_U152         N16982822 U3_SWEN_OFF_DLY U2_CB_HOLD U2_CB_HOLDB
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_S7    VIN 0 U2_N17512741 0 MOS_U2_S7_CB 
+E_U2_ABM11         IFAST_RESET 0 VALUE { if( V(IFAST_ST)>0.5,0,V(U2_N18474953))
++     }
+X_U2_U5         U2_N17512792 U2_N17512790 N17045771 U2_N17513979
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U144         IFAST_ST U2_N18553403 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=10n
+X_U2_U134         U2_N18397090 N16982822 U2_N18398079 OR2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U6         U2_IFAST-TRIP_TIME U2_N17729754 IFAST_ST N17513081
++  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U110         THERMAL_FAULT U2_N17787025 U2_1 OR2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U2_U115         SWEN U2_N17890958 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U2_F1    U2_N17512963 U2_N17513127 0 IMON MOS_U2_F1_CB 
+C_U2_C4         VIN U2_GATE  80p  
+X_U2_U4         GHI_1 U2_N17512792 BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=130u
+X_U2_U140         U2_N18471436 U2_N18471471 ONE_SHOT_CB PARAMS:  T=500  
+C_U2_C6         0 U2_VIN_S  100n  
+X_U2_U7         U2_N17513090 U2_N17890958 GHI_1 N17888931 SRLATCHRHP_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+X_U2_U139         TIMER_ST U2_N18471436 INV_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=10n
+E_U2_ABM6         U2_N18747129 0 VALUE { IF(V(SWEN)>0.5, V(U2_N18747098),0)   
++  }
+X_U2_U116         U2_N18050548 U2_N18195515 U2_INPUT_TRAN AND2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+X_U2_U2         VIN U2_N17512844 U2_PG_ST COMP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5
+X_U2_U132         IFAST_RESET U2_1 U2_2 OR2_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+X_U2_U119         U2_N18059704 U2_TURN_OFF_CTL BUF_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5
+X_U2_U127         U2_N18050548 U2_N18195512 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+R_U2_R7         U2_N17652583 U2_N17512741  1  
+X_U2_U10         SWEN U2_CTRL U2_N18042902 N18042512 SRLATCHRHP_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=0.5
+R_U2_R6         0 N16982822  1MEG  
+E_U2_ABM1         U2_N18747143 0 VALUE { IF(V(U2_GHI) > 0.5,
++  V(U2_N18747098),V(U2_ENT))    }
+X_U2_U121         U2_N18190734 U2_N18190774 U2_IFAST-TRIP_TIME AND2_BASIC_GEN_CB
++  PARAMS: VDD=1 VSS=0 VTHRESH=500E-3
+C_U2_C7         0 U2_N18059704  1u  
+X_U2_U3         U2_PG_ST U2_N17512790 BUF_DELAY_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=0.5 DELAY=130u
+X_U2_U106         N17045771 U2_N17787025 ONE_SHOT_CB PARAMS:  T=1500  
+X_U2_U125         U2_N18190814 SWEN U2_N18190734 AND2_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=500E-3
+X_U2_U111         U2_N17794741 U2_IFAST_ST_CTL BUF_BASIC_GEN_CB PARAMS: VDD=1
++  VSS=0 VTHRESH=0.5
+X_U2_S3    0 0 U2_VOUT_INT DVDT/BGATE MOS_U2_S3_CB 
+X_U2_U126         U2_N18190734 U2_N18190771 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+V_U2_V22         U2_IFAST_TH 0 35
+X_U2_S10    U2_C 0 N16900450 0 MOS_U2_S10_CB 
+X_U2_U114         PG THERMAL_OK U2_N17863938 OR2_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
++  VTHRESH=500E-3
+V_U2_V10         U2_N17513227 VIN 10
+R_U2_V10LOAD         U2_N17513227 VIN 10k
+X_U2_S1    U2_N17513979 0 PG U2_N17512741 MOS_U2_S1_CB 
+E_U2_E4         U2_N18081501 0 N16900450 0 1
+* CB variant: VIN sample cap charged from an internal copy of VIN (no IN pin current)
+E_U2_VINCOPY      U2_VIN_COPY 0 VIN 0 1
+X_U2_S9    U2_N18042902 0 U2_VIN_COPY U2_VIN_S MOS_U2_S9_CB 
+X_U2_U133         U2_N18534784 U2_CTRL U2_N18397090 AND2_BASIC_GEN_CB PARAMS:
++  VDD=1 VSS=0 VTHRESH=500E-3
+D_U2_D8         U2_N17794741 U2_N17737817 D_D1_CB 
+X_U2_U105         U2_IFAST_ST_CTL U2_N17729253 ONE_SHOT_CB PARAMS:  T=500  
+C_U2_C3         U2_GATE U2_N17512963  800p  
+.ENDS
+* ngspice: the PSpice VSWITCH switches are mapped to XSPICE devices, which makes
+* ngspice tighten trtol to 1 for the whole circuit -> very small timesteps / stalls.
+* xtrtol=7 restores the ngspice default.
+* METHOD=GEAR: the logic gates of this model are 1 ohm/1 nF stages (tau=1 ns) with
+* us timesteps; trapezoidal integration rings on them and can flip internal latches
+* (spurious faults, lost retries, hangs). The model is validated with gear.
+* Both are GLOBAL options for the whole simulation.
+.OPTIONS XTRTOL=7 METHOD=GEAR
+
+.subckt FLTb_U5_S8_CB 1 2 3 4  
+S_U5_S8         3 4 1 2 _U5_S8
+RS_U5_S8         1 2 1G
+.MODEL         _U5_S8 VSWITCH Roff=1e12 Ron=0.1 Voff=1 Von=0
+.ends FLTb_U5_S8_CB
+
+.subckt FLTb_U5_S3_CB 1 2 3 4  
+S_U5_S3         3 4 1 2 _U5_S3
+RS_U5_S3         1 2 1G
+.MODEL         _U5_S3 VSWITCH Roff=1e12 Ron=1m Voff=1 Von=0
+.ends FLTb_U5_S3_CB
+
+.subckt FLTb_U5_S4_CB 1 2 3 4  
+S_U5_S4         3 4 1 2 _U5_S4
+RS_U5_S4         1 2 1G
+.MODEL         _U5_S4 VSWITCH Roff=1e12 Ron=0.1 Voff=1 Von=0
+.ends FLTb_U5_S4_CB
+
+.subckt FLTb_U5_S1_CB 1 2 3 4  
+S_U5_S1         3 4 1 2 _U5_S1
+RS_U5_S1         1 2 1G
+.MODEL         _U5_S1 VSWITCH Roff=1e12 Ron=0.1 Voff=1 Von=0
+.ends FLTb_U5_S1_CB
+
+.subckt FLTb_U5_S7_CB 1 2 3 4  
+S_U5_S7         3 4 1 2 _U5_S7
+RS_U5_S7         1 2 1G
+.MODEL         _U5_S7 VSWITCH Roff=1e12 Ron=0.1 Voff=1 Von=0
+.ends FLTb_U5_S7_CB
+
+.subckt FLTb_U5_S6_CB 1 2 3 4  
+S_U5_S6         3 4 1 2 _U5_S6
+RS_U5_S6         1 2 1G
+.MODEL         _U5_S6 VSWITCH Roff=1e12 Ron=0.1 Voff=1 Von=0
+.ends FLTb_U5_S6_CB
+
+.subckt ILIM_U3_H3_CB 1 2 3 4  
+H_U3_H3         3 4 VH_U3_H3 1
+VH_U3_H3         1 2 0V
+.ends ILIM_U3_H3_CB
+
+.subckt ILIM_U3_S1_CB 1 2 3 4  
+S_U3_S1         3 4 1 2 _U3_S1
+RS_U3_S1         1 2 1G
+.MODEL         _U3_S1 VSWITCH Roff=1e8 Ron=20k Voff=0.8 Von=0.2
+.ends ILIM_U3_S1_CB
+
+.subckt MOS_U2_S6_CB 1 2 3 4  
+S_U2_S6         3 4 1 2 _U2_S6
+RS_U2_S6         1 2 1G
+.MODEL         _U2_S6 VSWITCH Roff=2e9 Ron=200 Voff=0.2 Von=0.8
+.ends MOS_U2_S6_CB
+
+.subckt Thermal_Fault_U2_U100_S1_CB 1 2 3 4  
+S_U2_U100_S1         3 4 1 2 _U2_U100_S1
+RS_U2_U100_S1         1 2 1G
+.MODEL         _U2_U100_S1 VSWITCH Roff=100E6 Ron=1 Voff=0.8 Von=0.2
+.ends Thermal_Fault_U2_U100_S1_CB
+
+.subckt Thermal_Fault_U2_U100_S5_CB 1 2 3 4  
+S_U2_U100_S5         3 4 1 2 _U2_U100_S5
+RS_U2_U100_S5         1 2 1G
+.MODEL         _U2_U100_S5 VSWITCH Roff=10m Ron=1e9 Voff=0.2 Von=0.8
+.ends Thermal_Fault_U2_U100_S5_CB
+
+.subckt MOS_U2_H1_CB 1 2 3 4  
+H_U2_H1         3 4 VH_U2_H1 1
+VH_U2_H1         1 2 0V
+.ends MOS_U2_H1_CB
+
+.subckt MOS_U2_S5_CB 1 2 3 4  
+S_U2_S5         3 4 1 2 _U2_S5
+RS_U2_S5         1 2 1G
+.MODEL         _U2_S5 VSWITCH Roff=1 Ron=2e9 Voff=0.2 Von=0.8
+.ends MOS_U2_S5_CB
+
+.subckt MOS_U2_S7_CB 1 2 3 4  
+S_U2_S7         3 4 1 2 _U2_S7
+RS_U2_S7         1 2 1G
+.MODEL         _U2_S7 VSWITCH Roff=1e9 Ron=1m Voff=0.2 Von=0.8
+.ends MOS_U2_S7_CB
+
+.subckt MOS_U2_F1_CB 1 2 3 4  
+F_U2_F1         3 4 VF_U2_F1 246e-6
+VF_U2_F1         1 2 0V
+.ends MOS_U2_F1_CB
+
+.subckt MOS_U2_S3_CB 1 2 3 4  
+S_U2_S3         3 4 1 2 _U2_S3
+RS_U2_S3         1 2 1G
+.MODEL         _U2_S3 VSWITCH Roff=1e9 Ron=2 Voff=0.2 Von=0.8
+.ends MOS_U2_S3_CB
+
+.subckt MOS_U2_S10_CB 1 2 3 4  
+S_U2_S10         3 4 1 2 _U2_S10
+RS_U2_S10         1 2 1G
+.MODEL         _U2_S10 VSWITCH Roff=1e9 Ron=0.01m Voff=0 Von=1
+.ends MOS_U2_S10_CB
+
+.subckt MOS_U2_S1_CB 1 2 3 4  
+S_U2_S1         3 4 1 2 _U2_S1
+RS_U2_S1         1 2 1G
+.MODEL         _U2_S1 VSWITCH Roff=1e6 Ron=1.0 Voff=0.0V Von=1.0V
+.ends MOS_U2_S1_CB
+
+.subckt MOS_U2_S9_CB 1 2 3 4  
+S_U2_S9         3 4 1 2 _U2_S9
+RS_U2_S9         1 2 1G
+.MODEL         _U2_S9 VSWITCH Roff=1e12 Ron=0.1 Voff=0 Von=1
+.ends MOS_U2_S9_CB
+
+.SUBCKT AND2_BASIC_GEN_CB A B Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH}  &  
++ V(B) > {VTHRESH},{VDD},{VSS})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS AND2_BASIC_GEN_CB
+*$
+.SUBCKT AND3_BASIC_GEN_CB A B C Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH}  &  
++ V(B) > {VTHRESH} &
++ V(C) > {VTHRESH},{VDD},{VSS})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS AND3_BASIC_GEN_CB
+*$
+.SUBCKT INV_BASIC_GEN_CB A  Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH} , 
++ {VSS},{VDD})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS INV_BASIC_GEN_CB
+*$
+.SUBCKT OR2_BASIC_GEN_CB A B Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH}  |  
++ V(B) > {VTHRESH},{VDD},{VSS})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS OR2_BASIC_GEN_CB
+*$
+* CB variant: diode-free latch (linear 10 ohm pull while S/R active, see header)
+.SUBCKT SRLATCHRHP_BASIC_GEN_CB S R Q QB PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+GQ 0 Qint VALUE = {IF(V(R) > {VTHRESH},(({VSS})-V(Qint))*0.1,IF(V(S)>{VTHRESH},(({VDD})-V(Qint))*0.1,0))}
+CQint Qint 0 1n
+RQint Qint 0 1000MEG
+V1 MY5 0 {VDD}
+V2 MYVSS 0 {VSS} 
+EQ Qqq 0 Qint 0 1
+X3 Qqq Qqqd1 BUF_BASIC_GEN_CB PARAMS: VDD={VDD} VSS={VSS} VTHRESH={VTHRESH}
+RQq Qqqd1 Q 1
+EQb Qbr 0 VALUE = {IF( V(Q) > {VTHRESH}, {VSS},{VDD})}
+RQb Qbr QB 1 
+Cdummy1 Q 0 1n 
+Cdummy2 QB 0 1n
+.IC V(Qint) {VSS}
+.ENDS SRLATCHRHP_BASIC_GEN_CB
+*$
+.SUBCKT INV_DELAY_BASIC_GEN_CB A  Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 DELAY = 10n 
+E_ABMGATE1    YINT1 0 VALUE {{IF(V(A) > {VTHRESH} , 
++ {VDD},{VSS})}}
+RINT YINT1 YINT2 1
+CINT YINT2 0 {DELAY*1.3}
+* CB variant: continuous threshold on the slow RC node
+E_ABMGATE2    YINT3 0 VALUE { {VSS}+({VDD}-{VSS})*0.5*(1-tanh((V(YINT2)-{VTHRESH})*1e5)) }
+RINT2 YINT3 Y 1
+CINT2 Y 0 1n
+.ENDS INV_DELAY_BASIC_GEN_CB
+*$
+.MODEL D_D1_CB D (IS = 1E-15 Rs = 50m N = 0.1 TT = 10p)
+*$
+.SUBCKT BUF_DELAY_BASIC_GEN_CB A  Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 DELAY = 10n 
+E_ABMGATE1    YINT1 0 VALUE {{IF(V(A) > {VTHRESH} , 
++ {VDD},{VSS})}}
+RINT YINT1 YINT2 1
+CINT YINT2 0 {DELAY*1.3}
+* CB variant: continuous threshold on the slow RC node
+E_ABMGATE2    YINT3 0 VALUE { {VSS}+({VDD}-{VSS})*0.5*(1+tanh((V(YINT2)-{VTHRESH})*1e5)) }
+RINT2 YINT3 Y 1
+CINT2 Y 0 1n
+.ENDS BUF_DELAY_BASIC_GEN_CB
+*$
+.SUBCKT BUF_BASIC_GEN_CB A  Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH} , 
++ {VDD},{VSS})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS BUF_BASIC_GEN_CB
+*$
+.SUBCKT COMP_BASIC_GEN_CB INP INM Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5	
+* CB variant: continuous comparator (tanh, 10 uV) for ngspice convergence
+E_ABM Yint 0 VALUE { {VSS} + ({VDD}-{VSS})*0.5*(1+tanh((V(INP)-V(INM))*1e5)) }
+R1 Yint Y 1
+C1 Y 0 1n
+.ENDS COMP_BASIC_GEN_CB
+*$
+.MODEL NMOS01_CB NMOS (VTO = 1.4 KP = 2400 LAMBDA = 0.001)
+.MODEL D_SOFT_CB D (IS=1E-15 N=1 RS=1)
+*$
+.SUBCKT NAND2_BASIC_GEN_CB A B Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH}  &  
++ V(B) > {VTHRESH},{VSS},{VDD})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS NAND2_BASIC_GEN_CB
+*$
+.SUBCKT ONE_SHOT_CB IN OUT
++ PARAMs:  T=100
+* CB variant: rebuilt one-shot (rising edge of IN -> pulse of T*1ns), no algebraic latch loop
+E_ABM1         CH 0 VALUE { if( V(IN)>0.5 | V(QI)>0.5,1,0)    }
+R_R1         MEAS CH  {T} 
+C_C1         0 MEAS  1.4427n  
+G_DIS        MEAS 0 VALUE { if( V(CH)<0.5, V(MEAS), 0) }
+E_DONE       DONE 0 VALUE { 0.5*(1+tanh((V(MEAS)-0.5)*1e5)) }
+G_Q          0 QI VALUE { if( V(DONE)>0.5, -V(QI)*0.1, if( V(IN)>0.5, (1-V(QI))*0.1, 0)) }
+C_Q          QI 0 1n
+R_Q          QI 0 1G
+E_ABM3         OUT 0 VALUE { if( V(QI)>0.5, 1-V(DONE), 0) }
+.IC V(QI)=0
+.ENDS ONE_SHOT_CB
+*$
+* CB variant: diode-free latch (linear 10 ohm pull while S/R active, see header)
+.SUBCKT SRLATCHSHP_BASIC_GEN_CB S R Q QB PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+GQ 0 Qint VALUE = {IF(V(S) > {VTHRESH},(({VDD})-V(Qint))*0.1,IF(V(R)>{VTHRESH},(({VSS})-V(Qint))*0.1,0))}
+CQint Qint 0 1n
+RQint Qint 0 1000MEG
+V1 MY5 0 {VDD}
+V2 MYVSS 0 {VSS} 
+EQ Qqq 0 Qint 0 1
+X3 Qqq Qqqd1 BUF_BASIC_GEN_CB PARAMS: VDD={VDD} VSS={VSS} VTHRESH={VTHRESH}
+RQq Qqqd1 Q 1
+EQb Qbr 0 VALUE = {IF( V(Q) > {VTHRESH}, {VSS},{VDD})}
+RQb Qbr QB 1 
+Cdummy1 Q 0 1n 
+Cdummy2 QB 0 1n 
+.IC V(Qint) {VSS}
+.ENDS SRLATCHSHP_BASIC_GEN_CB
+*$
+.SUBCKT D_MODE_CB 1 2
+D1 1 2 DD1
+.MODEL DD1 D (IS = 1e-5 Rs = 10m N = 2.317)
+.ENDS D_MODE_CB
+*$
+.SUBCKT COMPHYS_BASIC_GEN_CB INP INM HYS OUT PARAMS: VDD=1 VSS=0 VTHRESH=0.5	 
+EIN INP1 INM1 INP INM 1  
+EHYS INP1 INP2 VALUE { IF( V(1) > {VTHRESH},-V(HYS),0) } 
+* CB variant: continuous comparator (tanh, 10 uV) for ngspice convergence
+EOUT OUT 0 VALUE { {VSS} + ({VDD}-{VSS})*0.5*(1+tanh((V(INP2)-V(INM1))*1e5)) } 
+R1 OUT 1 1 
+C1 1 0 5n 
+RINP1 INP1 0 1K 
+.ENDS COMPHYS_BASIC_GEN_CB 
+*$
+.SUBCKT OR3_BASIC_GEN_CB A B C Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH}  |  
++ V(B) > {VTHRESH} |
++ V(C) > {VTHRESH},{VDD},{VSS})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS OR3_BASIC_GEN_CB
+*$
+.SUBCKT NOR2_BASIC_GEN_CB A B Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH}  |  
++ V(B) > {VTHRESH},{VSS},{VDD})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS NOR2_BASIC_GEN_CB
+*$
+.SUBCKT NAND3_BASIC_GEN_CB A B C Y PARAMS: VDD=1 VSS=0 VTHRESH=0.5 
+E_ABMGATE    YINT 0 VALUE {{IF(V(A) > {VTHRESH}  &  
++ V(B) > {VTHRESH} &
++ V(C) > {VTHRESH},{VSS},{VDD})}}
+RINT YINT Y 1
+CINT Y 0 1n
+.ENDS NAND3_BASIC_GEN_CB
+*$
+
+
+
+.SUBCKT BFET_CB DRAIN GATE SOURCE  
+M_M2         DRAIN GATE SOURCE SOURCE Q1_CB           
+C_C4         SOURCE GATE  4262p  
+C_C1         GATE DRAIN  238p  
+D_D1_CB         SOURCE DRAIN D_D1_CB 
+C_C3         SOURCE DRAIN  214pF  
+.ENDS
+
+
+** Wrapper definitions for AA legacy support **
+
+
+.model Q1_CB nmos
+
++ vto=1.8
++ kp=50
+
+
+.model D_D1_CB d
+
++ is=1e-15
++ rs=0.05
++ n=0.1
++ tt=1e-11
+

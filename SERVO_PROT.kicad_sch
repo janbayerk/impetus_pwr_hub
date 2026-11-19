@@ -3903,6 +3903,50 @@
 				)
 			)
 		)
+		(property "Sim.Library" "SIM_PRJ/SPICE/TPS259830ONRGE_TRANS.lib"
+			(at 55.88 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Name" "TPS259830ONRGE"
+			(at 55.88 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Device" "SUBCKT"
+			(at 55.88 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Pins" "1=IN0 2=IN1 3=IN2 6=EN_UVLO 7=ITIMER 8=ILIM 9=IMON 10=RETRY_DLY 11=NRETRY 12=OVLO 13=PG 15=dVdT/BGATE 16=IN3 17=OUT0 18=OUT1 19=OUT2 20=OUT3 21=OUT4 22=OUT5 23=OUT6 24=OUT7"
+			(at 55.88 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "14"
 			(uuid "56a429f0-39b7-4244-8d30-c293f481765f")
 		)
@@ -5583,6 +5627,50 @@
 			)
 		)
 		(property "Description" ""
+			(at 55.88 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Library" "SIM_PRJ/SPICE/TPS259830ONRGE_TRANS.lib"
+			(at 55.88 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Name" "TPS259830ONRGE"
+			(at 55.88 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Device" "SUBCKT"
+			(at 55.88 115.57 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Pins" "1=IN0 2=IN1 3=IN2 6=EN_UVLO 7=ITIMER 8=ILIM 9=IMON 10=RETRY_DLY 11=NRETRY 12=OVLO 13=PG 15=dVdT/BGATE 16=IN3 17=OUT0 18=OUT1 19=OUT2 20=OUT3 21=OUT4 22=OUT5 23=OUT6 24=OUT7"
 			(at 55.88 115.57 0)
 			(hide yes)
 			(show_name no)

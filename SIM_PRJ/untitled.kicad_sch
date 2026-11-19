@@ -3751,7 +3751,7 @@
 				)
 			)
 		)
-		(property "Sim.Library" "/home/janb/Downloads/TPS2121_TRANS_ngspice.lib"
+		(property "Sim.Library" "SPICE/TPS2121_TRANS_ngspice.lib"
 			(at 194.056 36.068 0)
 			(show_name no)
 			(do_not_autoplace no)
