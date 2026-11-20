@@ -2241,6 +2241,16 @@
 		)
 		(uuid "b09eaff5-6aa7-4c25-a66e-50e5b65d237e")
 	)
+	(text "C40 should be rated for Vin + 10V\nTI's spice model has this weird function for high voltages at \npin 7\n"
+		(exclude_from_sim no)
+		(at 149.606 65.786 0)
+		(effects
+			(font
+				(size 0.508 0.508)
+			)
+		)
+		(uuid "d55a6be2-6a0d-426f-885a-d6f9a44f1518")
+	)
 	(text "resistor values are from claude, it makes sense\nto limit the servo return current in the signal line"
 		(exclude_from_sim no)
 		(at 214.63 61.214 0)

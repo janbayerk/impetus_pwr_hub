@@ -424,7 +424,7 @@
         "version": 0
       },
       "model_mode": 4,
-      "workbook_filename": ""
+      "workbook_filename": "SIM_PRJ.wbk"
     },
     "page_layout_descr_file": "",
     "plot_directory": "",
@@ -438,7 +438,7 @@
         "uuid": "4516d3cb-1c37-4f16-ac30-ec51d6f374bb"
       }
     ],
-    "used_designators": "#PWR1-4,#PWR32-33,#PWR35-42,#PWR64,C29,C36,C38-43,C47,D3,D5,J1-4,Q3-4,R1,R29-32,R35-44,R49-53,S1,U2,U6,V1-3",
+    "used_designators": "#PWR1-16,#PWR32-33,#PWR35-42,#PWR64,C1-9,C29,C36,C38-43,C47,D1-3,D5,J1-4,L1,Q1,Q3-4,R1-19,R29-32,R35-44,R49-53,S1-2,U1-2,U6,V1-3,Ven1-3,Vin1",
     "variants": []
   },
   "sheets": [

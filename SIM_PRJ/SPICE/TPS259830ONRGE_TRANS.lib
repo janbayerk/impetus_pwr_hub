@@ -82,6 +82,9 @@
 *        making later retry delays 5 % longer -> only 3 instead of 4 retries).
 *        FAULT_OK/THERMAL_OK are cleared by the retry pulse (otherwise RETRY_DLY
 *        was not discharged at the next fault -> retries 2..n came too early).
+*        Internal logic now uses the internal PG state instead of the voltage on
+*        the open-drain PG pin (without a pull-up the model never left the
+*        startup state: no ITIMER, no CB trip).
 *     3. ONE_SHOT_CB rebuilt: TI's self-holding loop OUT->CH->OUT has two valid
 *        solutions and ngspice fired spurious pulses (resetting latches). Now
 *        the pulse state is stored on a capacitor (set by IN, reset when the
@@ -305,7 +308,7 @@ V_U3_V6         U3_VINT 0 2.5
 V_U3_V7         U3_N16889528 0 1.53
 V_U3_V18         U3_N16889465 0 5m
 G_U3_ABM2I2         ITIMER 0 VALUE { IF(V(U3_TIMER_EN) > 0.5, 2u, 0)     }
-X_U3_U44         U3_TIMER_OK PG U3_N16956421 U3_TIMER_EN AND3_BASIC_GEN_CB PARAMS:
+X_U3_U44         U3_TIMER_OK N17045771 U3_N16956421 U3_TIMER_EN AND3_BASIC_GEN_CB PARAMS:
 +  VDD=1 VSS=0 VTHRESH=500E-3
 E_U3_ABM1         N16982382 0 VALUE { IF(V(ITIMER) <0.5, 1, 0)    }
 X_U3_U36         DEVICE_EN_B U3_DEVICE_EN INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
@@ -457,7 +460,7 @@ C_U2_C5         0 U2_N17794741  1u
 * CB variant: no active current-limit gate regulation (term with CB<0.5 removed)
 G_U2_ABM2I4         U2_GATE U2_N17512963 VALUE { IF(
 +  (V(N17023688) > 0.5 & V(U2_CTRL) > 0.5) |
-+  (V(U2_TURN_OFF_DEL) >0.5 & V(U2_CTRL) > 0.5)|(V(PG) <0.5 & V(U2_CTRL) >
++  (V(U2_TURN_OFF_DEL) >0.5 & V(U2_CTRL) > 0.5)|(V(N17045771) <0.5 & V(U2_CTRL) >
 +  0.5),LIMIT((V(N16982569)-V(N16982954))*0.5m,0,1m),0)    }
 X_U2_U14         U2_N18643280 TIMER_ST N18378615 U2_N18372648
 +  SRLATCHRHP_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
@@ -498,7 +501,7 @@ X_U2_U1         U2_GATE U2_N17513414 U2_N17513090 COMP_BASIC_GEN_CB PARAMS: VDD=
 X_U2_U35         N16982569 U2_N18059866 U2_N18059845 U2_OVER_60
 +  COMPHYS_BASIC_GEN_CB PARAMS: VDD=1 VSS=0 VTHRESH=0.5
 R_U2_R11         U2_N18195512 U2_N18195515  93.77  
-X_U2_U142         PG U2_N18534784 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
+X_U2_U142         N17045771 U2_N18534784 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
 +  VTHRESH=500E-3
 D_U2_D10         U2_N18190774 U2_N18190771 D_D1_CB 
 * CB variant: series 1k in gate clamp path (convergence / no hard output discharge)
@@ -592,7 +595,7 @@ X_U2_U126         U2_N18190734 U2_N18190771 INV_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
 +  VTHRESH=500E-3
 V_U2_V22         U2_IFAST_TH 0 35
 X_U2_S10    U2_C 0 N16900450 0 MOS_U2_S10_CB 
-X_U2_U114         PG THERMAL_OK U2_N17863938 OR2_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
+X_U2_U114         N17045771 THERMAL_OK U2_N17863938 OR2_BASIC_GEN_CB PARAMS: VDD=1 VSS=0
 +  VTHRESH=500E-3
 V_U2_V10         U2_N17513227 VIN 10
 R_U2_V10LOAD         U2_N17513227 VIN 10k
