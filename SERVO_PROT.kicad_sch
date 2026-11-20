@@ -3697,7 +3697,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(in_pos_files yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "0636ec6b-22e6-439e-866f-f9948f1b52f1")
 		(property "Reference" "C38"
